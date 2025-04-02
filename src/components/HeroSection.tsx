@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Location {
   id: number;
@@ -70,44 +71,24 @@ const locations: Location[] = [
 
 const HeroSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [prevIndex, setPrevIndex] = useState(0);
-  const [isHovering, setIsHovering] = useState(false);
-  const [bottomHoverIndex, setBottomHoverIndex] = useState<number | null>(null);
-  const [direction, setDirection] = useState<"left" | "right" | null>(null);
-  const [isChanging, setIsChanging] = useState(false);
+  const [direction, setDirection] = useState<"left" | "right">("right");
   const [isPaused, setIsPaused] = useState(false);
-  const sliderRef = useRef<HTMLDivElement>(null);
   const autoplayTimerRef = useRef<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const bottomNavRef = useRef<HTMLDivElement>(null);
 
-  // Handle the slide transition animation
-  useEffect(() => {
-    if (currentIndex !== prevIndex) {
-      setIsChanging(true);
-      const timer = setTimeout(() => {
-        setIsChanging(false);
-      }, 800);
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentIndex, prevIndex]);
-
-  // Auto-slide fungsi
+  // Auto-slide function
   useEffect(() => {
     if (autoplayTimerRef.current) {
       clearInterval(autoplayTimerRef.current);
     }
 
-    // auoplay
     if (!isPaused) {
       autoplayTimerRef.current = window.setInterval(() => {
-        setPrevIndex(currentIndex);
         setDirection("right");
         setCurrentIndex((prev) => (prev + 1) % locations.length);
       }, 5000);
     }
 
-    // Clean up interval on unmount or when dependencies change
     return () => {
       if (autoplayTimerRef.current) {
         clearInterval(autoplayTimerRef.current);
@@ -115,23 +96,18 @@ const HeroSection = () => {
     };
   }, [currentIndex, isPaused]);
 
-  // Pause autoplay on user interaction or hover
   const pauseAutoplay = () => {
     setIsPaused(true);
   };
 
-  // Resume autoplay after delay
   const resumeAutoplay = () => {
-    // Add a slight delay before resuming autoplay
     setTimeout(() => {
       setIsPaused(false);
     }, 2000);
   };
 
-  // User control functions
   const nextSlide = () => {
     pauseAutoplay();
-    setPrevIndex(currentIndex);
     setDirection("right");
     setCurrentIndex((prevIndex) => (prevIndex + 1) % locations.length);
     resumeAutoplay();
@@ -139,7 +115,6 @@ const HeroSection = () => {
 
   const prevSlide = () => {
     pauseAutoplay();
-    setPrevIndex(currentIndex);
     setDirection("left");
     setCurrentIndex(
       (prevIndex) => (prevIndex - 1 + locations.length) % locations.length
@@ -151,196 +126,204 @@ const HeroSection = () => {
     if (index === currentIndex) return;
 
     pauseAutoplay();
-    setPrevIndex(currentIndex);
     setDirection(index > currentIndex ? "right" : "left");
     setCurrentIndex(index);
     resumeAutoplay();
   };
 
   const getVisibleLocations = () => {
-    const visibleIndices = [];
-
-    for (let i = -3; i <= 3; i++) {
-      const index = (currentIndex + i + locations.length) % locations.length;
-      visibleIndices.push(index);
+    const result = [];
+    const totalItems = locations.length;
+    
+    for (let i = -2; i <= 2; i++) {
+      const index = (currentIndex + i + totalItems) % totalItems;
+      result.push(locations[index]);
     }
+    
+    return result;
+  };
 
-    return visibleIndices.map((index) => locations[index]);
+  // Animation variants
+  const slideVariants = {
+    hiddenRight: {
+      x: "100%",
+      opacity: 0,
+    },
+    hiddenLeft: {
+      x: "-100%",
+      opacity: 0,
+    },
+    visible: {
+      x: "0",
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+      },
+    },
+    exitRight: {
+      x: "-100%",
+      opacity: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+      },
+    },
+    exitLeft: {
+      x: "100%",
+      opacity: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+      },
+    },
+  };
+
+  const fadeVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.8 } },
+    exit: { opacity: 0, transition: { duration: 0.8 } }
   };
 
   return (
     <div
-      ref={containerRef}
       className="relative h-screen w-full overflow-hidden"
       onMouseEnter={pauseAutoplay}
       onMouseLeave={resumeAutoplay}
     >
-      {/* Background Image with Fade/Zoom Animation */}
-      <div
-        className="absolute inset-0 transition-all duration-1000 ease-in-out bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${locations[currentIndex].image})`,
-          transform: isChanging ? "scale(1.05)" : "scale(1)",
-          opacity: isChanging ? 0.8 : 1,
-        }}
-      />
-
-      {/* Previous image for crossfade effect */}
-      {isChanging && (
-        <div
-          className="absolute inset-0 transition-opacity duration-1000 ease-out opacity-0 bg-cover bg-center"
+      {/* Background Image with Smooth Transition */}
+      <AnimatePresence mode="wait" custom={direction}>
+        <motion.div
+          key={currentIndex}
+          custom={direction}
+          variants={fadeVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${locations[prevIndex].image})`,
-            opacity: 0.5,
+            backgroundImage: `url(${locations[currentIndex].image})`,
           }}
         />
-      )}
+      </AnimatePresence>
 
-      {/* Subtle overlay gradient (always present) */}
+      {/* Subtle overlay gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-30" />
 
-      {/* Main Content Box with Slide-in Animation */}
-      <div
-        className={`absolute max-w-md transition-all duration-700 ease-out ${
-          locations[currentIndex].position
-        } ${
-          isChanging
-            ? direction === "right"
-              ? "-translate-x-16 opacity-0"
-              : "translate-x-16 opacity-0"
-            : "translate-x-0 opacity-100"
-        }`}
-        onMouseEnter={() => {
-          setIsHovering(true);
-          pauseAutoplay();
-        }}
-        onMouseLeave={() => {
-          setIsHovering(false);
-          resumeAutoplay();
-        }}
-      >
-        <div
-          className={`p-6 rounded-lg transition-all duration-500 ease-out ${
-            isHovering
-              ? "bg-gradient-to-b from-black/70 to-black/50 backdrop-blur-sm shadow-lg transform scale-105"
-              : "bg-transparent"
-          }`}
+      {/* Content Box with Slide Animation */}
+      <AnimatePresence mode="wait" custom={direction}>
+        <motion.div
+          key={currentIndex}
+          custom={direction}
+          variants={slideVariants}
+          initial={direction === "right" ? "hiddenRight" : "hiddenLeft"}
+          animate="visible"
+          exit={direction === "right" ? "exitLeft" : "exitRight"}
+          className={`absolute max-w-md ${locations[currentIndex].position}`}
+          onMouseEnter={pauseAutoplay}
+          onMouseLeave={resumeAutoplay}
         >
-          {/* Smaller title text */}
-          <h2
-            className={`text-3xl font-bold mb-2 transition-all duration-300 ${
-              isHovering ? "text-white" : "text-white drop-shadow-lg"
-            }`}
+          <motion.div
+            className="p-6 rounded-lg bg-gradient-to-b from-black/70 to-black/50 backdrop-blur-sm shadow-lg"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
           >
-            {locations[currentIndex].name}
-          </h2>
-
-          <div
-            className={`overflow-hidden transition-all duration-500 ease-out ${
-              isHovering ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-            }`}
-          >
-            {/* Smaller description text */}
-            <p className="text-white text-sm mb-3">
-              {locations[currentIndex].description}
-            </p>
-            <a
-              href="#"
-              className="text-white text-xs border-b border-transparent hover:border-white inline-block transition-all duration-300"
+            <h2 className="text-3xl font-bold text-white mb-2">
+              {locations[currentIndex].name}
+            </h2>
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              transition={{ duration: 0.5 }}
             >
-              Learn more
-            </a>
-          </div>
-        </div>
-      </div>
+              <p className="text-white text-sm mb-3">
+                {locations[currentIndex].description}
+              </p>
+              <a
+                href="#"
+                className="text-white text-xs border-b border-transparent hover:border-white inline-block transition-all duration-300"
+              >
+                Learn more
+              </a>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
 
-      {/* Bottom Navigation with Slide-up Animation */}
-      <div
-        className="absolute bottom-8 left-0 right-0 flex justify-center items-center space-x-6 transition-all duration-700 ease-out"
-        style={{
-          transform: isChanging ? "translateY(16px)" : "translateY(0)",
-          opacity: isChanging ? 0.7 : 1,
-        }}
-      >
+      {/* Bottom Navigation */}
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center items-center px-2">
         <button
           onClick={prevSlide}
-          className="text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-70 transition-all duration-300 ease-out hover:scale-110"
+          className="text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-70 transition-all duration-300 ease-out hover:scale-110 flex-shrink-0 z-10"
         >
           <ChevronLeft size={20} />
         </button>
 
         <div
-          className="flex space-x-8 items-center overflow-hidden"
-          ref={sliderRef}
+          ref={bottomNavRef}
+          className="flex-1 overflow-x-auto scrollbar-hide mx-4"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {getVisibleLocations().map((location) => {
-            const isActive = location.id === locations[currentIndex].id;
+          <div className="flex items-center w-max min-w-full justify-center space-x-8 md:space-x-12 px-4">
+            {getVisibleLocations().map((location, i) => {
+              const isMiddleItem = i === 2;
 
-            return (
-              <div
-                key={location.id}
-                className="text-center cursor-pointer relative transition-all duration-500 ease-out"
-                style={{
-                  transform: isActive ? "translateY(-4px)" : "translateY(0)",
-                }}
-                onClick={() =>
-                  goToSlide(locations.findIndex((l) => l.id === location.id))
-                }
-                onMouseEnter={() => {
-                  setBottomHoverIndex(location.id);
-                  pauseAutoplay();
-                }}
-                onMouseLeave={() => {
-                  setBottomHoverIndex(null);
-                  resumeAutoplay();
-                }}
-              >
-                <p
-                  className={`font-semibold transition-all duration-300 ${
-                    isActive ? "text-white text-base" : "text-gray-300 text-sm"
+              return (
+                <motion.div
+                  key={`${location.id}-${i}`}
+                  className={`text-center cursor-pointer relative px-3 ${
+                    isMiddleItem ? "z-10" : "z-0"
                   }`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ 
+                    opacity: isMiddleItem ? 1 : 0.7,
+                    y: isMiddleItem ? -4 : 0,
+                    scale: isMiddleItem ? 1.1 : 0.9
+                  }}
+                  transition={{ duration: 0.3 }}
+                  onClick={() =>
+                    goToSlide(locations.findIndex((l) => l.id === location.id))
+                  }
+                  onMouseEnter={pauseAutoplay}
+                  onMouseLeave={resumeAutoplay}
                 >
-                  {location.name}
-                </p>
-
-                {/* Animated underline indicator */}
-                <div className="relative h-0.5 mt-1 w-full overflow-hidden">
-                  <div
-                    className={`bg-white absolute left-0 right-0 h-full transition-all duration-300 ${
-                      isActive ? "w-full" : "w-0"
+                  <p
+                    className={`font-semibold whitespace-nowrap ${
+                      isMiddleItem
+                        ? "text-white text-base"
+                        : "text-gray-300 text-sm"
                     }`}
-                  />
-                </div>
+                  >
+                    {location.name}
+                  </p>
 
-                <div className="h-6 relative">
-                  {bottomHoverIndex === location.id && (
-                    <a
-                      href="#"
-                      className="text-white text-xs absolute top-0 left-0 right-0 text-center transition-all duration-300 ease-out"
-                      style={{
-                        opacity: bottomHoverIndex === location.id ? 1 : 0,
-                        transform:
-                          bottomHoverIndex === location.id
-                            ? "translateY(0)"
-                            : "translateY(8px)",
-                      }}
-                    >
-                      Learn more
-                    </a>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                  <motion.div 
+                    className="relative h-0.5 mt-1 w-full overflow-hidden"
+                    initial={{ width: 0 }}
+                    animate={{ width: isMiddleItem ? "100%" : "0%" }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="bg-white absolute left-0 right-0 h-full" />
+                  </motion.div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
         <button
           onClick={nextSlide}
-          className="text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-70 transition-all duration-300 ease-out hover:scale-110"
+          className="text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-70 transition-all duration-300 ease-out hover:scale-110 flex-shrink-0 z-10"
         >
           <ChevronRight size={20} />
         </button>
       </div>
+
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 };

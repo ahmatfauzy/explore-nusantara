@@ -78,14 +78,14 @@ const Navbar = () => {
             >
               Information Center
             </a>
-            <a 
+            {/* <a 
               href="#" 
               className={`font-medium hover:opacity-80 transition-colors duration-300 ${
                 isScrolled ? 'text-black' : 'text-white'
               }`}
             >
               Essentials
-            </a>
+            </a> */}
           </div>
         </nav>
 
@@ -114,9 +114,9 @@ const Navbar = () => {
             <a href="#" className="text-black font-medium px-4 py-2 hover:bg-gray-100 rounded-md">
               Information Center
             </a>
-            <a href="#" className="text-black font-medium px-4 py-2 hover:bg-gray-100 rounded-md">
+            {/* <a href="#" className="text-black font-medium px-4 py-2 hover:bg-gray-100 rounded-md">
               Essentials
-            </a>
+            </a> */}
           </nav>
         </div>
       )}
