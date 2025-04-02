@@ -40,7 +40,7 @@ const Navbar = () => {
               isScrolled ? "text-black" : "text-white"
             }`}
           >
-            JelajahIndonesia
+            ExploreNusantara
           </span>
         </div>
 

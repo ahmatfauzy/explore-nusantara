@@ -8,7 +8,7 @@ interface Location {
   description: string;
   image: string;
   position: string;
-  link: string; // Added link property
+  link: string;
 }
 
 const locations: Location[] = [
@@ -19,7 +19,7 @@ const locations: Location[] = [
       "Along the south coast of the beautiful Lombok Island lies a long and wide stretch of beautiful white sand beach facing the glistening Indian Ocean.",
     image: "/images/borobudur.jpeg",
     position: "top-1/4 left-16",
-    link: "/destination/mandalika", // Unique link for Mandalika
+    link: "/destination/mandalika", 
   },
   {
     id: 2,
@@ -28,8 +28,9 @@ const locations: Location[] = [
       "A majestic 9th-century Buddhist temple in Central Java, recognized as the largest Buddhist temple in the world.",
     image: "/images/borobudur.jpeg",
     position: "top-1/3 right-16",
-    link: "/destination/borobudur", // Unique link for Borobudur
+    link: "/destination/borobudur", 
   },
+  // 
   {
     id: 3,
     name: "Likupang",
@@ -37,7 +38,7 @@ const locations: Location[] = [
       "A pristine coastal area in North Sulawesi with crystal clear waters and white sandy beaches perfect for diving and snorkeling.",
     image: "/images/borobudur.jpeg",
     position: "bottom-1/4 left-20",
-    link: "/destination/likupang", // Unique link for Likupang
+    link: "/destination/likupang", 
   },
   {
     id: 4,
@@ -46,7 +47,7 @@ const locations: Location[] = [
       "The largest volcanic lake in the world, located in North Sumatra, formed by a supervolcanic eruption.",
     image: "/images/borobudur.jpeg",
     position: "top-1/4 right-20",
-    link: "/destination/lake-toba", // Unique link for Lake Toba
+    link: "/destination/lake-toba",
   },
   {
     id: 5,
@@ -55,7 +56,7 @@ const locations: Location[] = [
       "Famous for its unique granite rock formations and pristine beaches on Belitung Island.",
     image: "/images/borobudur.jpeg",
     position: "top-16 left-32",
-    link: "/destination/tanjung-kelayang", // Unique link for Tanjung Kelayang
+    link: "/destination/tanjung-kelayang", 
   },
   {
     id: 6,
@@ -64,7 +65,7 @@ const locations: Location[] = [
       "An active volcano in East Java offering breathtaking views, especially during sunrise.",
     image: "/images/borobudur.jpeg",
     position: "bottom-32 right-24",
-    link: "/destination/bromo", // Unique link for Bromo
+    link: "/destination/bromo", 
   },
   {
     id: 7,
@@ -73,7 +74,7 @@ const locations: Location[] = [
       "A hidden paradise in North Maluku with historical significance from World War II and stunning underwater scenery.",
     image: "/images/borobudur.jpeg",
     position: "bottom-1/3 left-1/4",
-    link: "/destination/morotai", // Unique link for Morotai
+    link: "/destination/morotai",
   },
 ];
 
