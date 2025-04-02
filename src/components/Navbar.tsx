@@ -40,7 +40,7 @@ const Navbar = () => {
           }`}>
             JelajahIndonesia
           </span>
-          <img 
+          {/* <img 
             src="/images/indonesia-logo.png" 
             alt="Wonderful Indonesia" 
             className="h-10"
@@ -48,7 +48,7 @@ const Navbar = () => {
               const target = e.target as HTMLImageElement;
               target.src = 'https://via.placeholder.com/100x40?text=Indonesia';
             }} 
-          />
+          /> */}
         </div>
 
         {/* Desktop Navigation */}
