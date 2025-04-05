@@ -37,16 +37,16 @@ const Navbar = () => {
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
       const dropdown = document.getElementById("info-dropdown");
       const trigger = document.getElementById("info-trigger");
 
       if (
         isInfoDropdownOpen &&
         dropdown &&
-        !dropdown.contains(event.target) &&
+        !dropdown.contains(event.target as Node) &&
         trigger &&
-        !trigger.contains(event.target)
+        !trigger.contains(event.target as Node)
       ) {
         setIsInfoDropdownOpen(false);
       }
@@ -140,7 +140,7 @@ const Navbar = () => {
     },
     {
       title: "Bali Regulations",
-      image: "/images/borobudur.jpeg",
+      image: "/images/bali-regulations.jpg",
       alt: "Balinese ceremony with crowd",
       link: "/information/bali-regulations",
     },
