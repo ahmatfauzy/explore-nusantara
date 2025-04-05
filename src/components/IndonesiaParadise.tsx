@@ -1,4 +1,3 @@
-// IndonesiaParadise.tsx
 import React from "react";
 
 const IndonesiaParadise: React.FC = () => {

@@ -1,82 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface Location {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  position: string;
-  link: string;
-}
-
-const locations: Location[] = [
-  {
-    id: 1,
-    name: "Mandalika",
-    description:
-      "Along the south coast of the beautiful Lombok Island lies a long and wide stretch of beautiful white sand beach facing the glistening Indian Ocean.",
-    image: "/images/borobudur.jpeg",
-    position: "top-1/4 left-16",
-    link: "/destination/mandalika", 
-  },
-  {
-    id: 2,
-    name: "Borobudur",
-    description:
-      "A majestic 9th-century Buddhist temple in Central Java, recognized as the largest Buddhist temple in the world.",
-    image: "/images/borobudur.jpeg",
-    position: "top-1/3 right-16",
-    link: "/destination/borobudur", 
-  },
-  // 
-  {
-    id: 3,
-    name: "Likupang",
-    description:
-      "A pristine coastal area in North Sulawesi with crystal clear waters and white sandy beaches perfect for diving and snorkeling.",
-    image: "/images/borobudur.jpeg",
-    position: "bottom-1/4 left-20",
-    link: "/destination/likupang", 
-  },
-  {
-    id: 4,
-    name: "Lake Toba",
-    description:
-      "The largest volcanic lake in the world, located in North Sumatra, formed by a supervolcanic eruption.",
-    image: "/images/borobudur.jpeg",
-    position: "top-1/4 right-20",
-    link: "/destination/lake-toba",
-  },
-  {
-    id: 5,
-    name: "Tanjung Kelayang",
-    description:
-      "Famous for its unique granite rock formations and pristine beaches on Belitung Island.",
-    image: "/images/borobudur.jpeg",
-    position: "top-16 left-32",
-    link: "/destination/tanjung-kelayang", 
-  },
-  {
-    id: 6,
-    name: "Bromo",
-    description:
-      "An active volcano in East Java offering breathtaking views, especially during sunrise.",
-    image: "/images/borobudur.jpeg",
-    position: "bottom-32 right-24",
-    link: "/destination/bromo", 
-  },
-  {
-    id: 7,
-    name: "Morotai",
-    description:
-      "A hidden paradise in North Maluku with historical significance from World War II and stunning underwater scenery.",
-    image: "/images/borobudur.jpeg",
-    position: "bottom-1/3 left-1/4",
-    link: "/destination/morotai",
-  },
-];
+import { locations } from "../data/locationsData";
 
 const HeroSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -222,6 +147,10 @@ const HeroSection = () => {
     exit: { opacity: 0, transition: { duration: 0.8 } },
   };
 
+  // Should show description - always show on mobile, or when hovered on desktop
+  const shouldShowDescription =
+    isMobile || hoveredLocation === locations[currentIndex].id;
+
   return (
     <div
       className="relative h-screen w-full overflow-hidden"
@@ -256,7 +185,11 @@ const HeroSection = () => {
           initial={direction === "right" ? "hiddenRight" : "hiddenLeft"}
           animate="visible"
           exit={direction === "right" ? "exitLeft" : "exitRight"}
-          className={`absolute max-w-md ${locations[currentIndex].position}`}
+          className={`absolute max-w-md ${
+            isMobile
+              ? "inset-x-0 mx-auto top-1/3 px-4"
+              : locations[currentIndex].position
+          }`}
           onMouseEnter={() => {
             setHoveredLocation(locations[currentIndex].id);
             pauseAutoplay();
@@ -268,7 +201,7 @@ const HeroSection = () => {
         >
           <motion.div
             className={`p-6 rounded-lg transition-all duration-300 ${
-              hoveredLocation === locations[currentIndex].id
+              shouldShowDescription
                 ? "bg-gradient-to-b from-black/80 to-black/60 backdrop-blur-sm shadow-lg"
                 : "bg-transparent"
             }`}
@@ -279,7 +212,7 @@ const HeroSection = () => {
               {locations[currentIndex].name}
             </h2>
 
-            {hoveredLocation === locations[currentIndex].id && (
+            {shouldShowDescription && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -301,7 +234,6 @@ const HeroSection = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Bottom Navigation - Centered with Closer Navigation Buttons */}
       <div className="absolute bottom-8 left-0 right-0 flex justify-center items-center">
         <div className="w-full max-w-4xl flex items-center px-4">
           <button

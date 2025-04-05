@@ -16,7 +16,6 @@ const Navbar = () => {
 
     window.addEventListener("scroll", handleScroll);
 
-    // Cleanup event listener
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -28,30 +27,28 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 py-6 px-6 md:px-8 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-8 transition-all duration-300 ${
         isScrolled ? "bg-white shadow-md" : "bg-transparent"
       }`}
     >
       <div className="flex justify-between items-center">
-        {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <span
-            className={`font-bold text-xl transition-colors duration-300 ${
-              isScrolled ? "text-black" : "text-white"
-            }`}
-          >
-            ExploreNusantara
-          </span>
+        {/* Logo - Ukuran berbeda untuk mobile dan desktop */}
+        <div className="flex items-center">
+          <img
+            src={isScrolled ? "/icon1.png" : "/icon2.png"}
+            alt="ExploreNusantara Logo"
+            className="h-8 md:h-12 w-auto" // h-8 untuk mobile, h-12 untuk desktop
+          />
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center">
-          <div className="flex space-x-8">
+          <div className="flex space-x-10">
             <a
               href="#"
-              className={`font-medium transition-colors duration-300 ${
-                isScrolled 
-                  ? "text-black hover:text-blue-600" 
+              className={`text-lg font-semibold transition-colors duration-300 ${
+                isScrolled
+                  ? "text-black hover:text-blue-600"
                   : "text-white hover:text-yellow-300"
               }`}
             >
@@ -59,9 +56,9 @@ const Navbar = () => {
             </a>
             <a
               href="#"
-              className={`font-medium transition-colors duration-300 ${
-                isScrolled 
-                  ? "text-black hover:text-blue-600" 
+              className={`text-lg font-semibold transition-colors duration-300 ${
+                isScrolled
+                  ? "text-black hover:text-blue-600"
                   : "text-white hover:text-yellow-300"
               }`}
             >
@@ -69,9 +66,9 @@ const Navbar = () => {
             </a>
             <a
               href="#"
-              className={`font-medium transition-colors duration-300 ${
-                isScrolled 
-                  ? "text-black hover:text-blue-600" 
+              className={`text-lg font-semibold transition-colors duration-300 ${
+                isScrolled
+                  ? "text-black hover:text-blue-600"
                   : "text-white hover:text-yellow-300"
               }`}
             >
@@ -96,7 +93,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden mt-4 py-4 px-2 bg-white rounded-lg shadow-lg animate-fadeIn">
+        <div className="md:hidden mt-4 py-4 px-2 bg-white rounded-lg animate-fadeIn">
           <nav className="flex flex-col space-y-4">
             <a
               href="#"
