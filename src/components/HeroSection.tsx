@@ -14,7 +14,6 @@ const HeroSection = () => {
   const bottomNavRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Check if mobile on mount and resize
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
