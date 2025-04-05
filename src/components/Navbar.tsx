@@ -15,9 +15,7 @@ const Navbar = () => {
         setIsScrolled(false);
       }
     };
-
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -25,13 +23,19 @@ const Navbar = () => {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    // Close info dropdown if mobile menu is toggled
-    if (!isMobileMenuOpen) {
+    // Close info dropdown if mobile menu is toggled off
+    if (isMobileMenuOpen) {
       setIsInfoDropdownOpen(false);
     }
   };
 
-  const toggleInfoDropdown = () => {
+  const toggleInfoDropdown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsInfoDropdownOpen(prevState => !prevState);
+  };
+
+  // Handle mobile dropdown toggle separately
+  const toggleMobileInfoDropdown = () => {
     setIsInfoDropdownOpen(!isInfoDropdownOpen);
   };
 
@@ -40,46 +44,61 @@ const Navbar = () => {
     const handleClickOutside = (event: MouseEvent) => {
       const dropdown = document.getElementById("info-dropdown");
       const trigger = document.getElementById("info-trigger");
-
+      const mobileDropdown = document.getElementById("mobile-essentials-content");
+      const mobileTrigger = document.getElementById("mobile-essentials-btn");
+      
+      // For desktop dropdown
       if (
         isInfoDropdownOpen &&
         dropdown &&
         !dropdown.contains(event.target as Node) &&
         trigger &&
-        !trigger.contains(event.target as Node)
+        !trigger.contains(event.target as Node) &&
+        !isMobileMenuOpen // Only consider this logic when mobile menu is closed
       ) {
         setIsInfoDropdownOpen(false);
       }
+      
+      // For mobile dropdown - we don't want to close when clicking inside
+      if (
+        isMobileMenuOpen &&
+        isInfoDropdownOpen &&
+        mobileDropdown &&
+        !mobileDropdown.contains(event.target as Node) &&
+        mobileTrigger &&
+        !mobileTrigger.contains(event.target as Node)
+      ) {
+        // Don't close the dropdown here - we'll let the button handle it
+      }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isInfoDropdownOpen]);
+  }, [isInfoDropdownOpen, isMobileMenuOpen]);
 
   // Animation variants
   const mobileMenuVariants = {
     hidden: {
       opacity: 0,
-      y: -20,
+      y: "-100%"
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.3,
-        ease: "easeOut",
-      },
+        ease: "easeOut"
+      }
     },
     exit: {
       opacity: 0,
-      y: -20,
+      y: "-100%",
       transition: {
         duration: 0.2,
-        ease: "easeIn",
-      },
-    },
+        ease: "easeIn"
+      }
+    }
   };
 
   const menuItemVariants = {
@@ -146,7 +165,7 @@ const Navbar = () => {
     },
     {
       title: "Brand Guidelines",
-      image: "/images/brand-guidelines.jpg",
+      image: "/images/borobudur.jpeg",
       alt: "Balinese temple gate",
       link: "/information/brand-guidelines",
     },
@@ -173,7 +192,6 @@ const Navbar = () => {
             className="h-8 md:h-12 w-auto"
           />
         </div>
-
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center">
           <div className="flex space-x-10">
@@ -216,10 +234,9 @@ const Navbar = () => {
                   }`}
                 />
               </button>
-
               {/* Information dropdown */}
               <AnimatePresence>
-                {isInfoDropdownOpen && (
+                {isInfoDropdownOpen && !isMobileMenuOpen && (
                   <motion.div
                     id="info-dropdown"
                     initial="hidden"
@@ -235,7 +252,6 @@ const Navbar = () => {
                           The Wonders of Indonesia Celebrated Internationally
                         </h3>
                       </motion.div>
-
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {infoCards.map((card, index) => (
                           <motion.a
@@ -243,7 +259,10 @@ const Navbar = () => {
                             href={card.link}
                             variants={cardVariants}
                             className="relative overflow-hidden rounded-lg group cursor-pointer"
-                            onClick={() => setIsInfoDropdownOpen(false)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsInfoDropdownOpen(false);
+                            }}
                           >
                             <div className="aspect-w-16 aspect-h-9 w-full overflow-hidden">
                               <img
@@ -273,7 +292,6 @@ const Navbar = () => {
             </div>
           </div>
         </nav>
-
         {/* Mobile Menu Button with animation */}
         <motion.button
           whileTap={{ scale: 0.95 }}
@@ -304,8 +322,7 @@ const Navbar = () => {
           )}
         </motion.button>
       </div>
-
-      {/* Mobile Menu with animation */}
+      {/* Full-screen Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -313,42 +330,69 @@ const Navbar = () => {
             animate="visible"
             exit="exit"
             variants={mobileMenuVariants}
-            className="md:hidden mt-4 py-4 px-4 bg-white rounded-lg"
+            className="md:hidden fixed top-0 left-0 w-full h-full bg-white z-40 pt-24 pb-6 px-6 overflow-y-auto"
           >
-            <nav className="flex flex-col space-y-3">
+            {/* Close button at the top right */}
+            <button
+              className="absolute top-6 right-6 p-2"
+              onClick={toggleMobileMenu}
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+            
+            {/* Logo at the top left */}
+            <div className="absolute top-6 left-6">
+              <img
+                src="/icon1.png"
+                alt="ExploreNusantara Logo"
+                className="h-8 w-auto"
+              />
+            </div>
+            
+            {/* Menu items */}
+            <nav className="flex flex-col space-y-4 mt-6">
               <motion.a
                 href="/"
                 custom={0}
                 initial="hidden"
                 animate="visible"
                 variants={menuItemVariants}
-                className="text-black font-medium px-4 py-3 hover:bg-gray-100 hover:text-blue-600 rounded-md text-lg"
+                className="text-black font-medium py-3 hover:bg-gray-100 hover:text-blue-600 rounded-md text-lg px-4"
+                onClick={() => setIsMobileMenuOpen(false)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
                 Home
               </motion.a>
+              
               <motion.a
                 href="/events"
                 custom={1}
                 initial="hidden"
                 animate="visible"
                 variants={menuItemVariants}
-                className="text-black font-medium px-4 py-3 hover:bg-gray-100 hover:text-blue-600 rounded-md text-lg"
+                className="text-black font-medium py-3 hover:bg-gray-100 hover:text-blue-600 rounded-md text-lg px-4"
+                onClick={() => setIsMobileMenuOpen(false)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
                 Calendar of Events
               </motion.a>
+              
+              {/* Essentials menu item with dropdown */}
               <motion.div
                 custom={2}
                 initial="hidden"
                 animate="visible"
                 variants={menuItemVariants}
+                className="flex flex-col"
               >
+                {/* The Essentials button/title */}
                 <button
-                  onClick={() => setIsInfoDropdownOpen(!isInfoDropdownOpen)}
-                  className="w-full flex justify-between items-center text-black font-medium px-4 py-3 hover:bg-gray-100 hover:text-blue-600 rounded-md text-lg"
+                  id="mobile-essentials-btn"
+                  className="w-full flex justify-between items-center text-black font-medium py-3 hover:bg-gray-100 hover:text-blue-600 rounded-md text-lg px-4"
+                  onClick={toggleMobileInfoDropdown}
                 >
                   Essentials
                   <ChevronDown
@@ -358,16 +402,19 @@ const Navbar = () => {
                     }`}
                   />
                 </button>
+                
+                {/* The expanded content for Essentials */}
                 <AnimatePresence>
-                  {isInfoDropdownOpen && (
+                  {isInfoDropdownOpen && isMobileMenuOpen && (
                     <motion.div
+                      id="mobile-essentials-content"
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3 }}
                       className="overflow-hidden pl-4"
                     >
-                      <div className="pt-2 pb-2 flex flex-col space-y-4">
+                      <div className="pt-2 pb-4 flex flex-col space-y-4">
                         <h3 className="text-lg font-semibold text-gray-800 px-4">
                           The Wonders of Indonesia Celebrated Internationally
                         </h3>
@@ -377,8 +424,8 @@ const Navbar = () => {
                             href={card.link}
                             className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-md group"
                             onClick={() => {
-                              setIsInfoDropdownOpen(false);
                               setIsMobileMenuOpen(false);
+                              setIsInfoDropdownOpen(false);
                             }}
                           >
                             <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0">
