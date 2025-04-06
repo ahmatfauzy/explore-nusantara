@@ -5,8 +5,8 @@ import { events } from "../data/eventsDataHome";
 const EventsCards: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleEventClick = (id: number) => {
-    navigate(`/events/${id}`);
+  const handleEventClick = (path: string) => {
+    navigate(path);
   };
 
   return (
@@ -34,7 +34,7 @@ const EventsCards: React.FC = () => {
         {events.map((event) => (
           <div
             key={event.id}
-            onClick={() => handleEventClick(event.id)}
+            onClick={() => handleEventClick(event.path)}
             className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
           >
             {/* Event Image */}

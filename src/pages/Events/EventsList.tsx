@@ -156,7 +156,7 @@ export default function EventsList() {
             <div
               key={event.id}
               className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
-              onClick={() => navigate(`/events/${event.id}`)}
+              onClick={() => navigate(event.path)}
             >
               <div className="h-48 overflow-hidden">
                 <img

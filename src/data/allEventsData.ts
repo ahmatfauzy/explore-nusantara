@@ -16,7 +16,7 @@ interface Event {
       title: "World Dance Day 'Toraya Ma'gellu' 2024",
       date: "April 29, 2024",
       location: "Toraja, South Sulawesi",
-      image: "/images/toraya-dance.jpg",
+      image: "/images/borobudur.jpeg",
       path: "/events/world-dance-day-2024",
       text: "Join us for an immersive cultural experience celebrating World Dance Day in the heart of Toraja. The 'Toraya Ma'gellu' event showcases traditional dance forms of Toraja, featuring performances from local artists and dancers from across Indonesia. This celebration highlights the unique cultural heritage of Sulawesi through movement and rhythm.\n\nThe event includes workshops on 'Dance Movement Techniques' and 'Dance Performance Management' led by renowned choreographers and cultural practitioners. Participants will learn about the symbolism behind traditional movements and the spiritual significance of dance in Torajan culture.\n\nThe day culminates in a grand performance under the stars, where both traditional and contemporary interpretations of Torajan dance will be presented. This event aims to preserve cultural heritage while creating a platform for artistic evolution and exchange between generations of dancers."
     },

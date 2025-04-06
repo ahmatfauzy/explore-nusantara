@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { infoCards } from "../data/info";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,7 +32,7 @@ const Navbar = () => {
 
   const toggleInfoDropdown = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsInfoDropdownOpen(prevState => !prevState);
+    setIsInfoDropdownOpen((prevState) => !prevState);
   };
 
   // Handle mobile dropdown toggle separately
@@ -44,9 +45,11 @@ const Navbar = () => {
     const handleClickOutside = (event: MouseEvent) => {
       const dropdown = document.getElementById("info-dropdown");
       const trigger = document.getElementById("info-trigger");
-      const mobileDropdown = document.getElementById("mobile-essentials-content");
+      const mobileDropdown = document.getElementById(
+        "mobile-essentials-content"
+      );
       const mobileTrigger = document.getElementById("mobile-essentials-btn");
-      
+
       // For desktop dropdown
       if (
         isInfoDropdownOpen &&
@@ -58,7 +61,7 @@ const Navbar = () => {
       ) {
         setIsInfoDropdownOpen(false);
       }
-      
+
       // For mobile dropdown - we don't want to close when clicking inside
       if (
         isMobileMenuOpen &&
@@ -81,24 +84,24 @@ const Navbar = () => {
   const mobileMenuVariants = {
     hidden: {
       opacity: 0,
-      y: "-100%"
+      y: "-100%",
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.3,
-        ease: "easeOut"
-      }
+        ease: "easeOut",
+      },
     },
     exit: {
       opacity: 0,
       y: "-100%",
       transition: {
         duration: 0.2,
-        ease: "easeIn"
-      }
-    }
+        ease: "easeIn",
+      },
+    },
   };
 
   const menuItemVariants = {
@@ -142,40 +145,6 @@ const Navbar = () => {
       },
     },
   };
-
-  // Information cards data with specific links for each card
-  const infoCards = [
-    {
-      title: "Visa & Entry Requirements",
-      image: "/images/foto.jpg",
-      alt: "ll",
-      link: "/information/",
-    },
-    {
-      title: "Travel Checklist",
-      image: "/images/foto.jpg",
-      alt: "ll",
-      link: "/information/",
-    },
-    {
-      title: "Currency & Payment",
-      image: "/images/foto.jpg",
-      alt: "lld",
-      link: "/information/",
-    },
-    {
-      title: "Emergency Contacts",
-      image: "/images/foto.jpeg",
-      alt: "ll",
-      link: "/information/",
-    },
-    {
-      title: "Cultural Etiquette",
-      image: "/images/foto.jpg",
-      alt: "ll",
-      link: "/information/",
-    },
-  ];
 
   return (
     <header
@@ -340,7 +309,7 @@ const Navbar = () => {
             >
               <X size={24} />
             </button>
-            
+
             {/* Logo at the top left */}
             <div className="absolute top-6 left-6">
               <img
@@ -349,7 +318,7 @@ const Navbar = () => {
                 className="h-8 w-auto"
               />
             </div>
-            
+
             {/* Menu items */}
             <nav className="flex flex-col space-y-4 mt-6">
               <motion.a
@@ -365,7 +334,7 @@ const Navbar = () => {
               >
                 Home
               </motion.a>
-              
+
               <motion.a
                 href="/events"
                 custom={1}
@@ -379,7 +348,7 @@ const Navbar = () => {
               >
                 Calendar of Events
               </motion.a>
-              
+
               {/* Essentials menu item with dropdown */}
               <motion.div
                 custom={2}
@@ -402,7 +371,7 @@ const Navbar = () => {
                     }`}
                   />
                 </button>
-                
+
                 {/* The expanded content for Essentials */}
                 <AnimatePresence>
                   {isInfoDropdownOpen && isMobileMenuOpen && (
@@ -440,7 +409,8 @@ const Navbar = () => {
                                 {card.title}
                               </span>
                               <span className="text-xs text-blue-600 flex items-center mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                Learn more <ArrowRight size={12} className="ml-1" />
+                                Learn more{" "}
+                                <ArrowRight size={12} className="ml-1" />
                               </span>
                             </div>
                           </a>

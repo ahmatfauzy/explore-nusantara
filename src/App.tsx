@@ -4,14 +4,14 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import EventsList from "./pages/Events/EventsList";
 import EventDetail from "./pages/Events/EventDetail";
-import Hi from "./pages/hi";
+import Hi from "./pages/ErrorPage";
 import MainLayout from "./components/MainLayout";
 import "./index.css";
+import EssentialsDetail from "./pages/Essentials/EssentialsDetail";
 
 function App() {
   return (
     <Routes>
-      {/* Semua halaman normal pakai layout */}
       <Route
         path="/"
         element={
@@ -29,7 +29,7 @@ function App() {
         }
       />
       <Route
-        path="/events/:eventId"
+        path="/events/:eventPath"
         element={
           <MainLayout>
             <EventDetail />
@@ -37,7 +37,16 @@ function App() {
         }
       />
 
-      {/* 404 page: tidak pakai layout */}
+      <Route
+        path="/information/:infoId"
+        element={
+          <MainLayout>
+            <EssentialsDetail />
+          </MainLayout>
+        }
+      />
+
+      {/* 404*/}
       <Route path="*" element={<Hi />} />
     </Routes>
   );
