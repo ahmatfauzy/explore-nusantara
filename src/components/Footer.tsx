@@ -10,12 +10,13 @@ const Footer = () => {
 
   // Essentials dropdown menu items
   const essentialsItems = [
-    { title: "COntoh", url: "/contoh1" },
-    { title: "COntoh", url: "/contoh2" },
-    { title: "COntoh", url: "/contoh3" },
+    {
+      title: "Visa & Entry Requirements",
+      url: "/information/visa-requirements",
+    },
+    { title: "Travel Checklist", url: "/information/travel-checklist" },
+    { title: "Currency & Payment", url: "/information/currency-payment" },
   ];
-
-  
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -134,7 +135,7 @@ const Footer = () => {
         </div>
 
         <div className="pt-6 mt-6 border-t border-gray-800 text-center md:text-left md:flex md:justify-between md:items-center">
-          <p className="text-sm text-gray-400">© 2025 by</p>
+          <p className="text-sm text-gray-400">©Copyright 2025</p>
           {/* <div className="mt-4 md:mt-0">
             <a
               href="/privacy"

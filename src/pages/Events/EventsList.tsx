@@ -44,7 +44,7 @@ export default function EventsList() {
       <div className="relative h-96 overflow-hidden">
         {featuredEvents.map((event, index) => (
           <div
-            key={event.id}
+            key={event.path}
             className={`absolute inset-0 transition-opacity duration-500 ${
               index === currentSlide
                 ? "opacity-100"
@@ -66,7 +66,7 @@ export default function EventsList() {
                   {event.date} | {event.location}
                 </p>
                 <Link
-                  to={`/events/${event.id}`}
+                  to={`${event.path}`}
                   className="inline-flex items-center px-4 py-2 bg-white text-blue-900 font-medium rounded hover:bg-blue-50 transition"
                 >
                   SEE EVENT DETAILS
@@ -154,7 +154,7 @@ export default function EventsList() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredEvents.map((event) => (
             <div
-              key={event.id}
+              key={event.path}
               className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
               onClick={() => navigate(event.path)}
             >

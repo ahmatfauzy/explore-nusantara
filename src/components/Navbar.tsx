@@ -175,6 +175,16 @@ const Navbar = () => {
               Home
             </a>
             <a
+              href="/explore"
+              className={`text-lg font-semibold transition-colors duration-300 ${
+                isScrolled
+                  ? "text-black hover:text-blue-600"
+                  : "text-white hover:text-yellow-300"
+              }`}
+            >
+              Explore Indonesia
+            </a>
+            <a
               href="/events"
               className={`text-lg font-semibold transition-colors duration-300 ${
                 isScrolled
@@ -333,6 +343,20 @@ const Navbar = () => {
                 whileTap={{ scale: 0.98 }}
               >
                 Home
+              </motion.a>
+
+              <motion.a
+                href="/explore"
+                custom={1}
+                initial="hidden"
+                animate="visible"
+                variants={menuItemVariants}
+                className="text-black font-medium py-3 hover:bg-gray-100 hover:text-blue-600 rounded-md text-lg px-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Explore Indonesia
               </motion.a>
 
               <motion.a

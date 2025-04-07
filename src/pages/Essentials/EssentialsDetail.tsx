@@ -3,29 +3,42 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { infoCards } from "../../data/info";
 
+// Function to handle inline Markdown formatting
+const formatMarkdownText = (text: string) => {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\n/g, "<br />");
+};
+
 export default function EssentialsDetail() {
   const { infoId } = useParams();
   const navigate = useNavigate();
-  
+
   const info = infoCards.find((card) => {
-    const cardPath = card.link.split('/').pop();
+    const cardPath = card.link.split("/").pop();
     return cardPath === infoId;
   });
-  
+
+  const recommendedEssentials = infoCards
+    .filter((card) => {
+      const cardPath = card.link.split("/").pop();
+      return cardPath !== infoId;
+    })
+    .slice(0, 3); // Limit to 3 recommendations
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Handle case when info is not found
   if (!info) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h2 className="text-2xl font-bold mb-4">Information not found</h2>
         <button
-          onClick={() => navigate("/information")}
+          onClick={() => navigate("/")}
           className="px-4 py-2 bg-blue-900 text-white rounded hover:bg-blue-800"
         >
-          Back to Information
+          Back to Home
         </button>
       </div>
     );
@@ -56,45 +69,110 @@ export default function EssentialsDetail() {
           </div>
         </div>
       </div>
-      
+
       {/* Content */}
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold mb-6 text-blue-900">
             Essential Information
           </h2>
-          
+
           {/* Content paragraphs - Using markdown conversion */}
           <div className="prose prose-lg max-w-none">
             {info.text.split("\n\n").map((paragraph, index) => {
               // Handle markdown headings
               if (paragraph.startsWith("# ")) {
-                return <h1 key={index} className="text-3xl font-bold mt-8 mb-4">{paragraph.slice(2)}</h1>;
+                return (
+                  <h1 key={index} className="text-3xl font-bold mt-8 mb-4">
+                    {paragraph.slice(2)}
+                  </h1>
+                );
               } else if (paragraph.startsWith("## ")) {
-                return <h2 key={index} className="text-2xl font-bold mt-6 mb-3">{paragraph.slice(3)}</h2>;
+                return (
+                  <h2 key={index} className="text-2xl font-bold mt-6 mb-3">
+                    {paragraph.slice(3)}
+                  </h2>
+                );
               } else if (paragraph.startsWith("### ")) {
-                return <h3 key={index} className="text-xl font-bold mt-4 mb-2">{paragraph.slice(4)}</h3>;
-              } else if (paragraph.startsWith("- ")) {
-                // Handle bullet points
-                const items = paragraph.split("\n- ");
+                return (
+                  <h3 key={index} className="text-xl font-bold mt-4 mb-2">
+                    {paragraph.slice(4)}
+                  </h3>
+                );
+              } else if (paragraph.trim().startsWith("- ")) {
+                // Tangani daftar bullet
+                const items = paragraph
+                  .trim()
+                  .split("\n")
+                  .filter((line) => line.startsWith("- "));
+
                 return (
                   <ul key={index} className="list-disc pl-6 mb-4">
                     {items.map((item, i) => (
-                      <li key={i} className="mb-1">
-                        {i === 0 ? item.slice(2) : item}
-                      </li>
+                      <li
+                        key={i}
+                        className="mb-1"
+                        dangerouslySetInnerHTML={{
+                          __html: formatMarkdownText(item.slice(2)),
+                        }}
+                      ></li>
                     ))}
                   </ul>
                 );
               } else {
                 return (
-                  <p key={index} className="mb-4">
-                    {paragraph}
-                  </p>
+                  <p
+                    key={index}
+                    className="mb-4"
+                    dangerouslySetInnerHTML={{
+                      __html: formatMarkdownText(paragraph),
+                    }}
+                  ></p>
                 );
               }
             })}
           </div>
+
+          {/* Recommended Essentials Section */}
+          {recommendedEssentials.length > 0 && (
+            <div className="mt-16 border-t pt-12">
+              <h2 className="text-2xl font-bold mb-8 text-blue-900">
+                Essentials Lainnya yang Mungkin Anda Ingin Baca juga
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {recommendedEssentials.map((item) => (
+                  <div
+                    key={item.link}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                    onClick={() => navigate(item.link)}
+                  >
+                    <div
+                      className="h-48 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${item.image})` }}
+                    ></div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg mb-2 text-blue-900">
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm line-clamp-2">
+                        {item.description}
+                      </p>
+                      <button
+                        className="mt-4 text-blue-900 font-medium hover:underline flex items-center"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(item.link);
+                        }}
+                      >
+                        Baca selengkapnya
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
