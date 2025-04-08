@@ -2,6 +2,7 @@ import HeroSection from "../components/HeroSection";
 // import Navbar from "../components/Navbar";
 import IndonesiaMap from "../components/IndonesiaParadise";
 import EventsCards from "../components/EventsCard";
+import ExploreIndo from "../components/ExploreIndo";
 
 function Home() {
   return (
@@ -11,7 +12,8 @@ function Home() {
       <div>
         <IndonesiaMap />
       </div>
-        <EventsCards />
+      <ExploreIndo />
+      <EventsCards />
     </div>
   );
 }
