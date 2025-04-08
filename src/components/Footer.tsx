@@ -86,6 +86,12 @@ const Footer = () => {
                 Home
               </a>
               <a
+                href="/explore"
+                className="text-gray-300 hover:text-white transition duration-150"
+              >
+                Explore Indonesia
+              </a>
+              <a
                 href="/events"
                 className="text-gray-300 hover:text-white transition duration-150"
               >
@@ -135,7 +141,7 @@ const Footer = () => {
         </div>
 
         <div className="pt-6 mt-6 border-t border-gray-800 text-center md:text-left md:flex md:justify-between md:items-center">
-          <p className="text-sm text-gray-400">©Copyright 2025</p>
+          <p className="text-sm text-gray-400 mb-5">©Copyright 2025</p>
           {/* <div className="mt-4 md:mt-0">
             <a
               href="/privacy"
