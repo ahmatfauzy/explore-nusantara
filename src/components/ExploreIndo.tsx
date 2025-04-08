@@ -100,7 +100,7 @@ const ExploreIndo = () => {
 
           {/* Right section with card */}
           <div className="lg:w-1/2">
-            <div className="overflow-hidden relative h-full">
+            <div className="overflow-hidden relative h-96 md:h-full">
               {slideData.map((slide, index) => (
                 index === activeIndex && (
                   <a 
@@ -114,11 +114,11 @@ const ExploreIndo = () => {
                         alt={slide.title}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
-                        <h3 className="text-2xl font-bold mb-2">
+                      <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-black/90 via-black/70 to-transparent pt-12">
+                        <h3 className="text-xl md:text-2xl font-bold mb-2 line-clamp-2">
                           {slide.title}
                         </h3>
-                        <p className="text-base">
+                        <p className="text-sm md:text-base line-clamp-3 md:line-clamp-none">
                           {slide.description}
                         </p>
                       </div>
