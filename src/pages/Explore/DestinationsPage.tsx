@@ -1,8 +1,19 @@
-import { useState} from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { locations } from "../../data/locationsData";
 import { DestinationCards } from "../../components/DestinationCards";
+import { motion } from "framer-motion";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 30 },
+  visible: { opacity: 1, x: 0 },
+};
 
 export default function DestinationsPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -41,22 +52,56 @@ export default function DestinationsPage() {
           >
             <div className="container mx-auto px-4 h-full flex flex-col justify-center">
               <div className="max-w-3xl text-white">
-                <p className="bg-black bg-opacity-50 inline-block px-3 py-1 text-sm mb-2">
-                  Featured Destination
-                </p>
-                <h2 className="text-4xl font-bold mb-2">{destination.name}</h2>
-                <p className="text-lg mb-6">{destination.description}</p>
-                <Link
-                  to={destination.link}
-                  className="inline-flex items-center px-4 py-2 bg-white text-blue-900 font-medium rounded hover:bg-blue-50 transition"
+                <motion.p
+                  className="bg-black bg-opacity-50 inline-block px-3 py-1 text-sm mb-2"
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.1 }}
                 >
-                  EXPLORE DESTINATION
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Link>
+                  Featured Destination
+                </motion.p>
+                <motion.h2
+                  className="text-4xl font-bold mb-2"
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {destination.name}
+                </motion.h2>
+                <motion.p
+                  className="text-lg mb-6"
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {destination.description}
+                </motion.p>
+                <motion.div
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Link
+                    to={destination.link}
+                    className="inline-flex items-center px-4 py-2 bg-white text-blue-900 font-medium rounded hover:bg-blue-50 transition"
+                  >
+                    EXPLORE DESTINATION
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </div>
         ))}
+
         {/* Slider Controls */}
         <button
           onClick={prevSlide}
@@ -77,7 +122,13 @@ export default function DestinationsPage() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-16">
         {/* Section Header */}
-        <div className="mb-8">
+        <motion.div
+          className="mb-8"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.3 }}
+        >
           <p className="text-blue-900 font-medium mb-2">
             DESTINATION RECOMMENDATIONS
           </p>
@@ -92,7 +143,7 @@ export default function DestinationsPage() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* All Destinations */}
         <DestinationCards />

@@ -2,17 +2,23 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { eventsData } from "../../data/allEventsData";
+import { motion } from "framer-motion";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export default function EventDetail() {
   const { eventPath } = useParams();
   const navigate = useNavigate();
-  
+
   const event = eventsData.find((e) => e.path === `/events/${eventPath}`);
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
   if (!event) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
@@ -26,11 +32,11 @@ export default function EventDetail() {
       </div>
     );
   }
-  
+
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Hero Banner */}
-      <div 
+      <div
         className="h-96 relative"
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${event.image})`,
@@ -39,7 +45,13 @@ export default function EventDetail() {
         }}
       >
         <div className="container mx-auto px-4 h-full flex items-center">
-          <div className="text-white max-w-3xl">
+          <motion.div
+            className="text-white max-w-3xl"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.1, duration: 0.6 }}
+          >
             <button
               onClick={() => navigate("/events")}
               className="flex items-center text-white mb-6 hover:underline"
@@ -47,35 +59,62 @@ export default function EventDetail() {
               <ChevronLeft className="mr-1 h-5 w-5" />
               Back to Events
             </button>
-            
-            <p className="bg-black bg-opacity-50 inline-block px-3 py-1 text-sm mb-2">
+
+            <motion.p
+              className="bg-black bg-opacity-50 inline-block px-3 py-1 text-sm mb-2"
+              variants={fadeUp}
+              transition={{ delay: 0.2 }}
+            >
               {event.category}
-            </p>
-            
-            <h1 className="text-4xl font-bold mb-3">
+            </motion.p>
+
+            <motion.h1
+              className="text-4xl font-bold mb-3"
+              variants={fadeUp}
+              transition={{ delay: 0.3 }}
+            >
               {event.title}
-            </h1>
-            
-            <p className="text-lg">
+            </motion.h1>
+
+            <motion.p
+              className="text-lg"
+              variants={fadeUp}
+              transition={{ delay: 0.4 }}
+            >
               {event.date} | {event.location}
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </div>
       </div>
 
       {/* Event Content */}
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-gray-800">
+          <motion.h2
+            className="text-3xl font-bold mb-8 text-gray-800"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ amount: 0.2 }}
+            transition={{ duration: 0.5 }}
+          >
             Event Details
-          </h2>
+          </motion.h2>
 
           {/* Event text paragraphs */}
           <div className="prose prose-lg max-w-none">
             {event.text.split("\n\n").map((paragraph, index) => (
-              <p key={index} className="mb-6">
+              <motion.p
+                key={index}
+                className="mb-6"
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{  amount: 0.2 }}
+                transition={{ delay: 0.1 * index }}
+              >
                 {paragraph}
-              </p>
+              </motion.p>
             ))}
           </div>
         </div>

@@ -323,7 +323,7 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <button
+          <button 
             onClick={nextSlide}
             className="text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-70 transition-all duration-300 ease-out hover:scale-110 flex-shrink-0 z-10 ml-2"
           >

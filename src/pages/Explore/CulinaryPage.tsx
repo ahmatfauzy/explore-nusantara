@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { culinaryData } from "../../data/culinaryData";
 import { CulinaryCards } from "../../components/CulinaryCards";
+
+// Animation variant
+const fadeRight = {
+  hidden: { opacity: 0, x: 40 },
+  visible: { opacity: 1, x: 0 },
+};
 
 export default function CulinaryPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const featuredItems = culinaryData.slice(0, 3);
 
-  // Slider navigation
   const nextSlide = () => {
     setCurrentSlide((prev) =>
       prev === featuredItems.length - 1 ? 0 : prev + 1
@@ -41,24 +47,61 @@ export default function CulinaryPage() {
           >
             <div className="container mx-auto px-4 h-full flex flex-col justify-center">
               <div className="max-w-3xl text-white">
-                <p className="bg-black bg-opacity-50 inline-block px-3 py-1 text-sm mb-2">
+                <motion.p
+                  className="bg-black bg-opacity-50 inline-block px-3 py-1 text-sm mb-2"
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.1 }}
+                >
                   {item.category === "food"
                     ? "Featured Food"
                     : "Featured Drink"}
-                </p>
-                <h2 className="text-4xl font-bold mb-2">{item.name}</h2>
-                <p className="text-lg mb-6">{item.description}</p>
-                <Link
-                  to={item.link}
-                  className="inline-flex items-center px-4 py-2 bg-white text-blue-900 font-medium rounded hover:bg-blue-50 transition"
+                </motion.p>
+
+                <motion.h2
+                  className="text-4xl font-bold mb-2"
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.2 }}
                 >
-                  DISCOVER MORE
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Link>
+                  {item.name}
+                </motion.h2>
+
+                <motion.p
+                  className="text-lg mb-6"
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {item.description}
+                </motion.p>
+
+                <motion.div
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Link
+                    to={item.link}
+                    className="inline-flex items-center px-4 py-2 bg-white text-blue-900 font-medium rounded hover:bg-blue-50 transition"
+                  >
+                    DISCOVER MORE
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </div>
         ))}
+
         {/* Slider Controls */}
         <button
           onClick={prevSlide}
@@ -78,7 +121,6 @@ export default function CulinaryPage() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-16">
-        {/* Section Header */}
         <div className="mb-8">
           <p className="text-blue-900 font-medium mb-2">
             CULINARY RECOMMENDATIONS
@@ -96,7 +138,6 @@ export default function CulinaryPage() {
           </div>
         </div>
 
-        {/* All Culinary Items */}
         <CulinaryCards />
       </div>
     </div>

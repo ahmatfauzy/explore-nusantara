@@ -1,4 +1,6 @@
 import { Routes, Route } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 import { useState, useEffect, Suspense } from "react";
 import Home from "./pages/Home";
 import EventsList from "./pages/Events/EventsList";
@@ -16,9 +18,51 @@ import CultureDetail from "./pages/Explore/CultureDetail";
 import ExplorePage from "./pages/Explore/ExplorePage";
 import CustomLoader from "./components/CustomLoader";
 
-function App() {
-  const [isLoading, setIsLoading] = useState(true);
+//
+import AOS from "aos";
+import "aos/dist/aos.css";
 
+function App() {
+  const location = useLocation();
+
+  // Init AOS sekali saat load
+  useEffect(() => {
+    const initializeAOS = () => {
+      AOS.init({
+        duration: 800,
+        once: true,
+        mirror: false,
+        offset: 120,
+        easing: "ease-in-out",
+        disable: window.innerWidth < 768,
+      });
+
+      setTimeout(() => {
+        AOS.refreshHard(); // pastikan semua elemen ke-detect
+      }, 500);
+    };
+
+    if (document.readyState === "complete") {
+      initializeAOS();
+    } else {
+      window.requestAnimationFrame(() => {
+        initializeAOS();
+      });
+
+      return () => window.removeEventListener("load", initializeAOS);
+    }
+  }, []);
+
+  // Refresh AOS setiap kali pindah route
+  useEffect(() => {
+    setTimeout(() => {
+      AOS.refresh();
+    }, 300); // kasih delay kecil biar render kelar dulu
+  }, [location]);
+
+  // //
+
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);

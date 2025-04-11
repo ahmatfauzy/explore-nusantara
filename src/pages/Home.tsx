@@ -4,6 +4,7 @@ import IndonesiaMap from "../components/IndonesiaParadise";
 import EventsCards from "../components/EventsCard";
 import ExploreIndo from "../components/ExploreIndo";
 
+
 function Home() {
   return (
     <div className="relative">

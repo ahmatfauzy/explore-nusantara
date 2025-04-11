@@ -3,3 +3,11 @@
 body {
   font-family: "Montserrat", sans-serif;
 }
+
+html,
+body {
+  overflow-x: hidden;
+  /* overflow-y: scroll !important; */
+  width: 100%;
+  position: relative;
+}

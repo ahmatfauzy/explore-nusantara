@@ -1,29 +1,36 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Location, locations } from "../../data/locationsData";
 import { Culture, cultureData } from "../../data/cultureData";
 import { Culinary, culinaryData } from "../../data/culinaryData";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 30 },
+  visible: { opacity: 1, x: 0 },
+};
+
 const ExplorePage = () => {
-  // Display only first 4 items from each dataset
   const [displayLocations] = useState<Location[]>(locations.slice(0, 4));
   const [displayCultures] = useState<Culture[]>(cultureData.slice(0, 4));
   const [displayCulinary] = useState<Culinary[]>(culinaryData.slice(0, 4));
   const navigate = useNavigate();
 
-  // Hero slider setup - using locations for the featured items
   const featuredItems = locations.slice(0, 4);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Auto-advance the slider
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) =>
         prev === featuredItems.length - 1 ? 0 : prev + 1
       );
-    }, 5000); // Change slide every 5 seconds
-
+    }, 5000);
     return () => clearInterval(interval);
   }, [featuredItems.length]);
 
@@ -59,18 +66,51 @@ const ExplorePage = () => {
           >
             <div className="container mx-auto px-4 h-full flex flex-col justify-center">
               <div className="max-w-3xl text-white">
-                <p className="bg-black bg-opacity-50 inline-block px-3 py-1 text-sm mb-2">
-                  Featured Destination
-                </p>
-                <h2 className="text-4xl font-bold mb-2">{item.name}</h2>
-                <p className="text-lg mb-6 line-clamp-2">{item.description}</p>
-                <Link
-                  to={item.link}
-                  className="inline-flex items-center px-4 py-2 bg-white text-blue-900 font-medium rounded hover:bg-blue-50 transition"
+                <motion.p
+                  className="bg-black bg-opacity-50 inline-block px-3 py-1 text-sm mb-2"
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.1 }}
                 >
-                  EXPLORE DESTINATION
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Link>
+                  Featured Destination
+                </motion.p>
+                <motion.h2
+                  className="text-4xl font-bold mb-2"
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {item.name}
+                </motion.h2>
+                <motion.p
+                  className="text-lg mb-6 line-clamp-2"
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {item.description}
+                </motion.p>
+                <motion.div
+                  variants={fadeRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Link
+                    to={item.link}
+                    className="inline-flex items-center px-4 py-2 bg-white text-blue-900 font-medium rounded hover:bg-blue-50 transition"
+                  >
+                    EXPLORE DESTINATION
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </div>
@@ -96,8 +136,13 @@ const ExplorePage = () => {
       {/* Destinations Section */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          {/* Header Section */}
-          <div className="mb-8">
+          <motion.div
+            className="mb-8"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
+          >
             <p className="text-blue-900 font-medium mb-2">
               TRAVEL RECOMMENDATIONS
             </p>
@@ -113,17 +158,20 @@ const ExplorePage = () => {
                 <ChevronRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Destinations Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {displayLocations.map((location) => (
-              <div
+            {displayLocations.map((location, index) => (
+              <motion.div
                 key={location.id}
                 onClick={() => navigate(location.link)}
                 className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ delay: 0.1 * (index % 4), duration: 0.6 }}
               >
-                {/* Destination Image */}
                 <div className="h-48 overflow-hidden">
                   <img
                     src={location.image}
@@ -131,8 +179,6 @@ const ExplorePage = () => {
                     className="w-full h-full object-cover hover:scale-105 transition duration-300"
                   />
                 </div>
-
-                {/* Destination Content */}
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2 text-gray-800">
                     {location.name}
@@ -145,7 +191,7 @@ const ExplorePage = () => {
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </span>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -154,8 +200,13 @@ const ExplorePage = () => {
       {/* Culture Section */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
-          {/* Header Section */}
-          <div className="mb-8">
+          <motion.div
+            className="mb-8"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
+          >
             <p className="text-blue-900 font-medium mb-2">
               CULTURAL EXPERIENCES
             </p>
@@ -171,17 +222,20 @@ const ExplorePage = () => {
                 <ChevronRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Culture Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {displayCultures.map((culture) => (
-              <div
+            {displayCultures.map((culture, index) => (
+              <motion.div
                 key={culture.id}
                 onClick={() => navigate(culture.link)}
                 className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ delay: 0.1 * (index % 4), duration: 0.6 }}
               >
-                {/* Culture Image */}
                 <div className="h-48 overflow-hidden">
                   <img
                     src={culture.image}
@@ -189,8 +243,6 @@ const ExplorePage = () => {
                     className="w-full h-full object-cover hover:scale-105 transition duration-300"
                   />
                 </div>
-
-                {/* Culture Content */}
                 <div className="p-6">
                   <div className="flex items-center mb-2">
                     <span className="text-sm text-blue-600 font-medium">
@@ -212,7 +264,7 @@ const ExplorePage = () => {
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </span>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -221,9 +273,16 @@ const ExplorePage = () => {
       {/* Culinary Section */}
       <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          {/* Header Section */}
-          <div className="mb-8">
-            <p className="text-blue-900 font-medium mb-2">TASTE OF INDONESIA</p>
+          <motion.div
+            className="mb-8"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.3 }}
+          >
+            <p className="text-blue-900 font-medium mb-2">
+              TASTE OF INDONESIA
+            </p>
             <div className="flex justify-between items-end">
               <h2 className="text-4xl font-bold text-blue-900">
                 Authentic Culinary Experience
@@ -236,17 +295,20 @@ const ExplorePage = () => {
                 <ChevronRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Culinary Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {displayCulinary.map((item) => (
-              <div
+            {displayCulinary.map((item, index) => (
+              <motion.div
                 key={item.id}
                 onClick={() => navigate(item.link)}
                 className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ delay: 0.1 * (index % 4), duration: 0.6 }}
               >
-                {/* Food Image */}
                 <div className="h-48 overflow-hidden">
                   <img
                     src={item.image}
@@ -254,8 +316,6 @@ const ExplorePage = () => {
                     className="w-full h-full object-cover hover:scale-105 transition duration-300"
                   />
                 </div>
-
-                {/* Food Content */}
                 <div className="p-6">
                   <div className="flex items-center mb-2">
                     <span className="text-sm text-blue-600 font-medium">
@@ -275,7 +335,7 @@ const ExplorePage = () => {
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </span>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

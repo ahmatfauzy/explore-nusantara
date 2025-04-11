@@ -2,6 +2,19 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { events } from "../data/eventsDataHome";
+import { motion } from "framer-motion";
+
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      delay,
+    },
+  }),
+};
 
 const EventsCards: React.FC = () => {
   const navigate = useNavigate();
@@ -29,7 +42,14 @@ const EventsCards: React.FC = () => {
   return (
     <div className="container mx-auto px-6 py-16">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-8">
+      <motion.div
+        className="flex justify-between items-center mb-8 overflow-hidden"
+        variants={fadeUpVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{  amount: 0.3 }}
+        custom={0.1}
+      >
         <div>
           <h3 className="text-sm tracking-wider mb-2 uppercase text-blue-600">
             UPCOMING EVENT
@@ -39,14 +59,28 @@ const EventsCards: React.FC = () => {
           </h2>
         </div>
         <a href="/events">
-          <button className="border border-blue-600 px-6 py-2 text-blue-600 font-medium hover:bg-blue-600 hover:text-white transition-colors">
+          <motion.button
+            className="border border-blue-600 px-6 py-2 text-blue-600 font-medium hover:bg-blue-600 hover:text-white transition-colors"
+            variants={fadeUpVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{amount: 0.3 }}
+            custom={0.2}
+          >
             Explore More Events →
-          </button>
+          </motion.button>
         </a>
-      </div>
+      </motion.div>
 
-      {/* Mobile Only: Carousel Navigation */}
-      <div className="flex justify-end mb-6 gap-3 md:hidden">
+      {/* Mobile Arrows */}
+      <motion.div
+        className="flex justify-end mb-6 gap-3 md:hidden"
+        variants={fadeUpVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{amount: 0.3 }}
+        custom={0.3}
+      >
         <button
           onClick={() => scroll("left")}
           className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
@@ -59,21 +93,25 @@ const EventsCards: React.FC = () => {
         >
           <ChevronRight size={24} />
         </button>
-      </div>
+      </motion.div>
 
-      {/* Mobile: Slideable Cards Container */}
+      {/* Mobile: Slideable Cards */}
       <div
         ref={scrollContainerRef}
         className="flex md:hidden overflow-x-auto gap-6 pb-6 scrollbar-hide snap-x snap-mandatory"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {events.map((event, index) => (
-          <div
+          <motion.div
             key={`mobile-${index}`}
             onClick={() => handleEventClick(event.path)}
             className="min-w-[280px] w-[280px] flex-shrink-0 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 hover:shadow-lg snap-start"
+            variants={fadeUpVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ amount: 0.3 }}
+            custom={0.1 + index * 0.1}
           >
-            {/* Event Image */}
             <div className="h-40 overflow-hidden">
               <img
                 src={event.image}
@@ -81,8 +119,6 @@ const EventsCards: React.FC = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-
-            {/* Event Content */}
             <div className="p-4">
               <div className="mb-3">
                 <span className="inline-block px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
@@ -101,19 +137,23 @@ const EventsCards: React.FC = () => {
                 {event.location}
               </p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
-      {/* Desktop: Grid Layout */}
+      {/* Desktop: Grid */}
       <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {events.map((event, index) => (
-          <div
+          <motion.div
             key={`desktop-${index}`}
             onClick={() => handleEventClick(event.path)}
             className="w-full h-[360px] bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
+            variants={fadeUpVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ amount: 0.3 }}
+            custom={0.1 + index * 0.1}
           >
-            {/* Event Image */}
             <div className="h-40 overflow-hidden">
               <img
                 src={event.image}
@@ -121,8 +161,6 @@ const EventsCards: React.FC = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-
-            {/* Event Content */}
             <div className="p-5">
               <div className="mb-3">
                 <span className="inline-block px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
@@ -141,11 +179,10 @@ const EventsCards: React.FC = () => {
                 {event.location}
               </p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
-      {/* Add custom CSS to hide scrollbar */}
       <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;

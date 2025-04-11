@@ -2,8 +2,14 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { infoCards } from "../../data/info";
+import { motion } from "framer-motion";
 
-// Function to handle inline Markdown formatting
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0 },
+};
+
+// Format markdown
 const formatMarkdownText = (text: string) => {
   return text
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
@@ -24,7 +30,7 @@ export default function EssentialsDetail() {
       const cardPath = card.link.split("/").pop();
       return cardPath !== infoId;
     })
-    .slice(0, 3); // Limit to 3 recommendations
+    .slice(0, 3);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -56,7 +62,13 @@ export default function EssentialsDetail() {
         }}
       >
         <div className="container mx-auto px-4 h-full flex flex-col justify-center">
-          <div className="max-w-3xl text-white">
+          <motion.div
+            className="max-w-3xl text-white"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.1, duration: 0.6 }}
+          >
             <button
               onClick={() => navigate("/")}
               className="flex items-center text-white mb-6 hover:underline"
@@ -64,50 +76,100 @@ export default function EssentialsDetail() {
               <ChevronLeft className="h-4 w-4 mr-1" />
               Back to Home
             </button>
-            <h1 className="text-4xl font-bold mb-2">{info.title}</h1>
-            <p className="text-lg">{info.description}</p>
-          </div>
+
+            <motion.h1
+              className="text-4xl font-bold mb-2"
+              variants={fadeUp}
+              transition={{ delay: 0.2 }}
+            >
+              {info.title}
+            </motion.h1>
+
+            <motion.p
+              className="text-lg"
+              variants={fadeUp}
+              transition={{ delay: 0.3 }}
+            >
+              {info.description}
+            </motion.p>
+          </motion.div>
         </div>
       </div>
 
       {/* Content */}
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6 text-blue-900">
+          <motion.h2
+            className="text-2xl font-bold mb-6 text-blue-900"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ amount: 0.2 }}
+            transition={{ duration: 0.5 }}
+          >
             Essential Information
-          </h2>
+          </motion.h2>
 
-          {/* Content paragraphs - Using markdown conversion */}
           <div className="prose prose-lg max-w-none">
             {info.text.split("\n\n").map((paragraph, index) => {
-              // Handle markdown headings
               if (paragraph.startsWith("# ")) {
                 return (
-                  <h1 key={index} className="text-3xl font-bold mt-8 mb-4">
+                  <motion.h1
+                    key={index}
+                    className="text-3xl font-bold mt-8 mb-4"
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ amount: 0.2 }}
+                    transition={{ delay: 0.1 * index }}
+                  >
                     {paragraph.slice(2)}
-                  </h1>
+                  </motion.h1>
                 );
               } else if (paragraph.startsWith("## ")) {
                 return (
-                  <h2 key={index} className="text-2xl font-bold mt-6 mb-3">
+                  <motion.h2
+                    key={index}
+                    className="text-2xl font-bold mt-6 mb-3"
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ amount: 0.2 }}
+                    transition={{ delay: 0.1 * index }}
+                  >
                     {paragraph.slice(3)}
-                  </h2>
+                  </motion.h2>
                 );
               } else if (paragraph.startsWith("### ")) {
                 return (
-                  <h3 key={index} className="text-xl font-bold mt-4 mb-2">
+                  <motion.h3
+                    key={index}
+                    className="text-xl font-bold mt-4 mb-2"
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ amount: 0.2 }}
+                    transition={{ delay: 0.1 * index }}
+                  >
                     {paragraph.slice(4)}
-                  </h3>
+                  </motion.h3>
                 );
               } else if (paragraph.trim().startsWith("- ")) {
-                // Tangani daftar bullet
                 const items = paragraph
                   .trim()
                   .split("\n")
                   .filter((line) => line.startsWith("- "));
 
                 return (
-                  <ul key={index} className="list-disc pl-6 mb-4">
+                  <motion.ul
+                    key={index}
+                    className="list-disc pl-6 mb-4"
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ amount: 0.2 }}
+                    transition={{ delay: 0.1 * index }}
+                  >
                     {items.map((item, i) => (
                       <li
                         key={i}
@@ -115,36 +177,53 @@ export default function EssentialsDetail() {
                         dangerouslySetInnerHTML={{
                           __html: formatMarkdownText(item.slice(2)),
                         }}
-                      ></li>
+                      />
                     ))}
-                  </ul>
+                  </motion.ul>
                 );
               } else {
                 return (
-                  <p
+                  <motion.p
                     key={index}
                     className="mb-4"
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ amount: 0.2 }}
+                    transition={{ delay: 0.1 * index }}
                     dangerouslySetInnerHTML={{
                       __html: formatMarkdownText(paragraph),
                     }}
-                  ></p>
+                  />
                 );
               }
             })}
           </div>
 
-          {/* Recommended Essentials Section */}
+          {/* Recommended Section */}
           {recommendedEssentials.length > 0 && (
-            <div className="mt-16 border-t pt-12">
+            <motion.div
+              className="mt-16 border-t pt-12"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ amount: 0.2 }}
+              transition={{ duration: 0.6 }}
+            >
               <h2 className="text-2xl font-bold mb-8 text-blue-900">
                 Essentials Lainnya yang Mungkin Anda Ingin Baca juga
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {recommendedEssentials.map((item) => (
-                  <div
+                {recommendedEssentials.map((item, i) => (
+                  <motion.div
                     key={item.link}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ amount: 0.2 }}
+                    transition={{ delay: 0.2 * i }}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                     onClick={() => navigate(item.link)}
                   >
                     <div
@@ -168,10 +247,10 @@ export default function EssentialsDetail() {
                         Baca selengkapnya
                       </button>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>

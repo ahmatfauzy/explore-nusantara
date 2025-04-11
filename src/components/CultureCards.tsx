@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { cultureData } from "../data/cultureData";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Pastikan CSS diimport
 
 // Filter categories for culture
 const cultureCategories = [
@@ -10,13 +12,24 @@ const cultureCategories = [
   { key: "craft", label: "Traditional Crafts" },
   { key: "ceremony", label: "Ceremonies" },
   { key: "music", label: "Music" },
-  { key: "martial-art", label: "Martial Arts" }
+  { key: "martial-art", label: "Martial Arts" },
 ];
 
 export function CultureCards() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [filteredItems, setFilteredItems] = useState(cultureData);
   const navigate = useNavigate();
+
+  // Initialize AOS
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: false,
+      mirror: false, // Ini yang diubah untuk menghilangkan animasi saat scroll up
+      offset: 120,
+      easing: 'ease-in-out',
+    });
+  }, []);
 
   // Filter items when category changes
   useEffect(() => {
@@ -33,8 +46,12 @@ export function CultureCards() {
   return (
     <>
       {/* Filter Categories */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        {cultureCategories.map((category) => (
+      <div 
+        className="flex flex-wrap gap-2 mb-8"
+        data-aos="fade-down"
+        data-aos-duration="800"
+      >
+        {cultureCategories.map((category, index) => (
           <button
             key={category.key}
             className={`px-5 py-2 rounded-full flex items-center ${
@@ -43,6 +60,8 @@ export function CultureCards() {
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
             onClick={() => setActiveCategory(category.key)}
+            data-aos="fade-up"
+            data-aos-delay={index * 80}
           >
             {category.key === "all" && (
               <span className="mr-2 rounded-full bg-blue-800 p-1">
@@ -68,11 +87,13 @@ export function CultureCards() {
 
       {/* Culture Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredItems.map((item) => (
+        {filteredItems.map((item, index) => (
           <div
             key={item.id}
             className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
             onClick={() => navigate(item.link)}
+            data-aos="fade-up"
+            data-aos-delay={index * 100}
           >
             <div className="h-48 overflow-hidden">
               <img
@@ -84,7 +105,9 @@ export function CultureCards() {
             <div className="p-6">
               <div className="flex items-center mb-2">
                 <span className="text-sm text-blue-600 font-medium">
-                  {item.category.charAt(0).toUpperCase() + item.category.slice(1).replace("-", " ")} • {item.region}
+                  {item.category.charAt(0).toUpperCase() +
+                    item.category.slice(1).replace("-", " ")}{" "}
+                  • {item.region}
                 </span>
               </div>
               <h3 className="text-xl font-bold mb-2 text-gray-800">
