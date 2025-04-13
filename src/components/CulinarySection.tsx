@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Culinary, culinaryData } from "../data/culinaryData"; // Assuming this is your data file path
+import { Culinary, culinaryData } from "../data/culinaryData";
 
 const CulinarySection = () => {
   const [displayCulinary] = useState<Culinary[]>(culinaryData.slice(0, 4));

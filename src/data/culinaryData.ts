@@ -24,7 +24,7 @@ export const culinaryData: Culinary[] = [
     name: "Sate Ayam",
     description:
       "Skewered and grilled chicken served with a tasty peanut sauce, one of Indonesia's most popular street foods.",
-    image: "/images/culinary/sate.png", // Placeholder image
+    image: "/images/culinary/sate.png", 
     category: "Food",
     region: "Java",
     link: "/culinary/sate-ayam",

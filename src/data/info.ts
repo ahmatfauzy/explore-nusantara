@@ -1,3 +1,13 @@
+export interface InfoCard {
+  id?: number;
+  title: string;
+  image: string;
+  alt: string;
+  link: string;
+  description: string;
+  text: string;
+}
+
 export const infoCards = [
   {
     title: "Visa & Entry Requirements",

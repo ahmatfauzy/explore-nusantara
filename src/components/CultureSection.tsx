@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Culture, cultureData } from "../data/cultureData"; // Assuming this is your data file path
+import { Culture, cultureData } from "../data/cultureData";
 
 const CultureSection = () => {
   const [displayCultures] = useState<Culture[]>(cultureData.slice(0, 4));

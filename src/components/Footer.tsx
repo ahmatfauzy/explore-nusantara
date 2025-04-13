@@ -8,7 +8,6 @@ const Footer = () => {
     setIsEssentialsOpen(!isEssentialsOpen);
   };
 
-  // Essentials dropdown menu items
   const essentialsItems = [
     {
       title: "Visa & Entry Requirements",

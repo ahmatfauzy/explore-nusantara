@@ -41,7 +41,6 @@ export function CultureCards() {
       setFilteredItems(filtered);
     }
 
-    // Force a refresh of the animations by slightly adjusting scroll position
     if (cultureGridRef.current) {
       const currentScrollPos = window.scrollY;
       window.scrollTo(0, currentScrollPos - 1);
@@ -106,8 +105,8 @@ export function CultureCards() {
               onClick={() => navigate(item.link)}
               variants={fadeUp}
               initial="hidden"
-              animate="visible" // Changed from whileInView to animate
-              layout // Added for smooth transitions
+              animate="visible" 
+              layout 
               transition={{ delay: index * 0.1, duration: 0.5 }}
             >
               <div className="h-48 overflow-hidden">

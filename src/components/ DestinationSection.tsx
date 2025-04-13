@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Location, locations } from "../data/locationsData"; // Assuming this is your data file path
+import { Location, locations } from "../data/locationsData"; 
 
 const DestinationSection = () => {
   const [displayLocations] = useState<Location[]>(locations.slice(0, 4));

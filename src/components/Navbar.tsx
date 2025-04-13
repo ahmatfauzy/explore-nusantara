@@ -1,34 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown, ArrowRight, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { infoCards } from "../data/info";
+import { infoCards, InfoCard } from "../data/info";
 import { culinaryData, Culinary } from "../data/culinaryData";
 import { cultureData, Culture } from "../data/cultureData";
-import { eventsData } from "../data/allEventsData";
-import { locations, Location } from "../data/locationsData"; // Import the locations data
+import { eventsData, Event } from "../data/allEventsData";
+import { locations, Location } from "../data/locationsData"; 
 
-// Event interface to better type the event data
-interface Event {
-  id: number;
-  title: string;
-  category: string;
-  date: string;
-  location: string;
-  image: string;
-  path: string;
-  text: string;
-  link?: string;
-}
 
-// Type data that combines all searchable data types
-type SearchItem = Culinary | Culture | Event | Location; // Add Location to SearchItem type
+type SearchItem = Culinary | Culture | Event | Location | InfoCard; 
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isInfoDropdownOpen, setIsInfoDropdownOpen] = useState(false);
 
-  // State for search
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchItem[]>([]);
@@ -50,7 +36,6 @@ const Navbar = () => {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    // Close info dropdown if mobile menu is toggled off
     if (isMobileMenuOpen) {
       setIsInfoDropdownOpen(false);
     }
@@ -61,18 +46,15 @@ const Navbar = () => {
     setIsInfoDropdownOpen((prevState) => !prevState);
   };
 
-  // Handle mobile dropdown toggle separately
   const toggleMobileInfoDropdown = () => {
     setIsInfoDropdownOpen(!isInfoDropdownOpen);
   };
 
-  // Toggle search panel
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
     setSearchQuery("");
     setSearchResults([]);
 
-    // Auto focus search input when opening
     if (!isSearchOpen && searchInputRef.current) {
       setTimeout(() => {
         searchInputRef.current?.focus();
@@ -80,7 +62,6 @@ const Navbar = () => {
     }
   };
 
-  // Handle search functionality
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -92,7 +73,6 @@ const Navbar = () => {
 
     const lowerQuery = query.toLowerCase();
 
-    // Search in all data sources
     const cultureResults = cultureData.filter(
       (item) =>
         item.name.toLowerCase().includes(lowerQuery) ||
@@ -119,10 +99,9 @@ const Navbar = () => {
       )
       .map((event) => ({
         ...event,
-        link: event.path, // Standardize link property for consistent display
+        link: event.path, 
       }));
 
-    // Add location search results
     const locationResults = locations
       .filter(
         (item) =>
@@ -131,19 +110,31 @@ const Navbar = () => {
       )
       .map((location) => ({
         ...location,
-        category: "Destination", // Add a category label for locations
+        category: "Destination", 
       }));
 
-    // Combine and sort results
+    const infoResults = infoCards
+      .filter(
+        (item) =>
+          item.title.toLowerCase().includes(lowerQuery) ||
+          item.description.toLowerCase().includes(lowerQuery) ||
+          (item.text && item.text.toLowerCase().includes(lowerQuery))
+      )
+      .map((card, index) => ({
+        ...card,
+        id: index,
+        category: "Information", 
+      }));
+
     setSearchResults([
       ...cultureResults,
       ...culinaryResults,
       ...eventResults,
       ...locationResults,
+      ...infoResults,
     ]);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const dropdown = document.getElementById("info-dropdown");
@@ -153,19 +144,17 @@ const Navbar = () => {
       );
       const mobileTrigger = document.getElementById("mobile-essentials-btn");
 
-      // For desktop dropdown
       if (
         isInfoDropdownOpen &&
         dropdown &&
         !dropdown.contains(event.target as Node) &&
         trigger &&
         !trigger.contains(event.target as Node) &&
-        !isMobileMenuOpen // Only consider this logic when mobile menu is closed
+        !isMobileMenuOpen 
       ) {
         setIsInfoDropdownOpen(false);
       }
 
-      // For mobile dropdown - we don't want to close when clicking inside
       if (
         isMobileMenuOpen &&
         isInfoDropdownOpen &&
@@ -183,7 +172,6 @@ const Navbar = () => {
     };
   }, [isInfoDropdownOpen, isMobileMenuOpen]);
 
-  // Animation variants
   const mobileMenuVariants = {
     hidden: {
       opacity: 0,
@@ -249,7 +237,6 @@ const Navbar = () => {
     },
   };
 
-  // Search panel animation variants
   const searchPanelVariants = {
     hidden: {
       opacity: 0,
@@ -273,7 +260,7 @@ const Navbar = () => {
     },
   };
 
-  // Function to get item name or title
+
   const getItemTitle = (item: SearchItem): string => {
     if ("name" in item && typeof item.name === "string") {
       return item.name;
@@ -283,7 +270,6 @@ const Navbar = () => {
     return "Untitled";
   };
 
-  // Function to get item description or text
   const getItemDescription = (item: SearchItem): string => {
     if ("description" in item && typeof item.description === "string") {
       return item.description;
@@ -293,7 +279,6 @@ const Navbar = () => {
     return "";
   };
 
-  // Function to get the URL from the item
   const getItemUrl = (item: SearchItem): string => {
     if ("link" in item && item.link) {
       return item.link;
@@ -303,19 +288,27 @@ const Navbar = () => {
     return "#";
   };
 
-  // Type guard function to check if the item is a Location
+  const getItemCategory = (item: SearchItem): string => {
+    if ("category" in item && typeof item.category === "string") {
+      return item.category;
+    }
+    return "";
+  };
+
   const isLocation = (item: SearchItem): item is Location => {
     return "mapUrl" in item;
   };
 
-  // Type guard function to check if the item is an Event
   const isEvent = (item: SearchItem): item is Event => {
     return "title" in item && "date" in item && "location" in item;
   };
 
-  // Type guard function to check if the item has a region property
   const hasRegion = (item: SearchItem): item is Culinary | Culture => {
     return "region" in item;
+  };
+
+  const isInfoCard = (item: SearchItem): item is InfoCard => {
+    return "alt" in item && "description" in item && "link" in item;
   };
 
   return (
@@ -698,7 +691,7 @@ const Navbar = () => {
                   type="text"
                   value={searchQuery}
                   onChange={handleSearch}
-                  placeholder="Search destinations, culture, events, or culinary"
+                  placeholder="Search destinations, culture, events, or information"
                   className="w-full py-4 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
                 />
               </div>
@@ -735,9 +728,9 @@ const Navbar = () => {
                           <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
                             {getItemTitle(item)}
                           </h3>
-                          {/* <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
-                            {item.category}
-                          </span> */}
+                          <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+                            {getItemCategory(item)}
+                          </span>
                         </div>
                         {isEvent(item) && (
                           <p className="text-sm text-gray-600 mb-2">
@@ -763,8 +756,14 @@ const Navbar = () => {
                             Indonesia
                           </p>
                         )}
+                        {isInfoCard(item) && (
+                          <p className="text-sm text-gray-600 mb-2">
+                            <span className="font-medium">Travel Guide:</span>{" "}
+                            Essential Information
+                          </p>
+                        )}
                         <p className="text-sm text-gray-600 line-clamp-3 mt-2">
-                          {getItemDescription(item)}
+                          {getItemDescription(item).substring(0, 150)}...
                         </p>
                       </div>
                     </motion.a>
@@ -801,7 +800,7 @@ const Navbar = () => {
                         </p>
                       </div>
                     </a>
-                    {/* Featured location instead of culinary */}
+                    {/* Featured location */}
                     <a
                       href="/destination/borobudur"
                       className="relative overflow-hidden rounded-lg group cursor-pointer"

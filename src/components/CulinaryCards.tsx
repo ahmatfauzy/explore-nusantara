@@ -4,14 +4,12 @@ import { ChevronRight } from "lucide-react";
 import { culinaryData } from "../data/culinaryData";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Filter categories for culinary
 const culinaryCategories = [
   { key: "all", label: "All Items" },
   { key: "Food", label: "Food" },
   { key: "Drink", label: "Drinks" },
 ];
 
-// Animations
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0 },
@@ -23,7 +21,6 @@ export function CulinaryCards() {
   const navigate = useNavigate();
   const culinaryGridRef = useRef<HTMLDivElement>(null);
 
-  // Filter items when category changes
   useEffect(() => {
     if (activeCategory === "all") {
       setFilteredItems(culinaryData);
@@ -34,7 +31,6 @@ export function CulinaryCards() {
       setFilteredItems(filtered);
     }
     
-    // Force a refresh of the animations by slightly adjusting scroll position
     if (culinaryGridRef.current) {
       const currentScrollPos = window.scrollY;
       window.scrollTo(0, currentScrollPos - 1);
@@ -49,7 +45,7 @@ export function CulinaryCards() {
         className="flex flex-wrap gap-2 mb-8"
         variants={fadeUp}
         initial="hidden"
-        animate="visible" // Changed from whileInView to animate
+        animate="visible" 
         transition={{ duration: 0.5 }}
       >
         {culinaryCategories.map((category, index) => (
@@ -99,8 +95,8 @@ export function CulinaryCards() {
               onClick={() => navigate(item.link)}
               variants={fadeUp}
               initial="hidden"
-              animate="visible" // Changed from whileInView to animate
-              layout // Added for smooth transitions
+              animate="visible" 
+              layout 
               transition={{ delay: index * 0.1, duration: 0.4 }}
             >
               <div className="h-48 overflow-hidden">
