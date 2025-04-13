@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { locations } from "../../data/locationsData";
 import { motion } from "framer-motion";
 
@@ -141,6 +141,41 @@ export default function DestinationDetail() {
               </motion.p>
             ))}
           </div>
+
+          {/* Map Section */}
+          <motion.div
+            className="mt-12"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h3 className="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+              <MapPin className="h-5 w-5 mr-2 text-blue-900" />
+              Location Map
+            </h3>
+            
+            <motion.div
+              className="bg-white p-4 rounded-lg shadow-md"
+              variants={fadeUp}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="relative pb-[56.25%] h-0 overflow-hidden rounded">
+                <iframe 
+                  src={destination.mapUrl}
+                  className="absolute top-0 left-0 w-full h-full border-0"
+                  title={`Map of ${destination.name}`}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+              <p className="text-sm text-gray-600 mt-2 text-center">
+                {destination.name}, Indonesia
+              </p>
+            </motion.div>
+          </motion.div>
 
           {/* Additional Information */}
           <motion.div

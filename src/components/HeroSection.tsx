@@ -10,9 +10,12 @@ const HeroSection = () => {
   const [hoveredLocation, setHoveredLocation] = useState<number | null>(null);
   const [bottomHoverIndex, setBottomHoverIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  // New state for cursor position
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const autoplayTimerRef = useRef<number | null>(null);
-  const bottomNavRef = useRef<HTMLDivElement>(null);
-  const sliderRef = useRef<HTMLDivElement>(null);
+  const bottomNavRef = useRef<HTMLDivElement | null>(null);
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -27,16 +30,47 @@ const HeroSection = () => {
     };
   }, []);
 
+  // Mouse movement tracking
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (containerRef.current) {
+        const { left, top, width, height } =
+          containerRef.current.getBoundingClientRect();
+        // Calculate mouse position relative to container
+        const x = (e.clientX - left) / width;
+        const y = (e.clientY - top) / height;
+
+        // Update mouse position with some delay for smoothness
+        setMousePosition({
+          x: x,
+          y: y,
+        });
+      }
+    };
+
+    // Only add the mouse move listener if not mobile
+    if (!isMobile) {
+      window.addEventListener("mousemove", handleMouseMove);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [isMobile]);
+
   // Auto-slide function
   useEffect(() => {
     if (autoplayTimerRef.current) {
       clearInterval(autoplayTimerRef.current);
     }
     if (!isPaused) {
-      autoplayTimerRef.current = window.setInterval(() => {
+      // Fix the number assignment to window.setInterval
+      const timerId = window.setInterval(() => {
         setDirection("right");
         setCurrentIndex((prev) => (prev + 1) % locations.length);
       }, 5000);
+      // Assign the numeric timer ID to the ref
+      autoplayTimerRef.current = timerId;
     }
     return () => {
       if (autoplayTimerRef.current) {
@@ -150,13 +184,22 @@ const HeroSection = () => {
   const shouldShowDescription =
     isMobile || hoveredLocation === locations[currentIndex].id;
 
+  // Calculate background image position based on mouse movement
+  // Limit the movement to a small range (e.g., 5%)
+  const backgroundPosition = isMobile
+    ? "center center"
+    : `${50 + (mousePosition.x - 0.5) * -10}% ${
+        50 + (mousePosition.y - 0.5) * -10
+      }%`;
+
   return (
     <div
+      ref={containerRef}
       className="relative h-screen w-full overflow-hidden"
       onMouseEnter={pauseAutoplay}
       onMouseLeave={resumeAutoplay}
     >
-      {/* Background Image with Smooth Transition */}
+      {/* Background Image with Smooth Transition and cursor following */}
       <AnimatePresence mode="wait" custom={direction}>
         <motion.div
           key={currentIndex}
@@ -165,9 +208,11 @@ const HeroSection = () => {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover"
           style={{
             backgroundImage: `url(${locations[currentIndex].image})`,
+            backgroundPosition: backgroundPosition,
+            transition: "background-position 0.5s ease-out",
           }}
         />
       </AnimatePresence>
@@ -272,6 +317,7 @@ const HeroSection = () => {
                       )
                     }
                     onMouseEnter={() => {
+                      // Fix type issue with proper assignment
                       setBottomHoverIndex(location.id);
                       pauseAutoplay();
                     }}
@@ -280,6 +326,13 @@ const HeroSection = () => {
                       resumeAutoplay();
                     }}
                   >
+                    {/* Triangle indicator pointing down for active item */}
+                    {isActive && (
+                      <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
+                        <div className="w-0 h-0 border-l-6 border-r-6 border-t-6 border-l-transparent border-r-transparent border-t-white"></div>
+                      </div>
+                    )}
+
                     <p
                       className={`font-semibold transition-all duration-300 whitespace-nowrap ${
                         isActive
@@ -323,7 +376,7 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <button 
+          <button
             onClick={nextSlide}
             className="text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-70 transition-all duration-300 ease-out hover:scale-110 flex-shrink-0 z-10 ml-2"
           >
@@ -339,6 +392,16 @@ const HeroSection = () => {
           .bottom-nav-item {
             min-width: 100px;
           }
+        }
+        /* Triangle CSS */
+        .border-l-6 {
+          border-left-width: 6px;
+        }
+        .border-r-6 {
+          border-right-width: 6px;
+        }
+        .border-t-6 {
+          border-top-width: 6px;
         }
       `}</style>
     </div>

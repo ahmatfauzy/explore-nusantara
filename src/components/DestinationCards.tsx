@@ -1,38 +1,97 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
-import { locations } from "../data/locationsData";
-import AOS from "aos";
-import "aos/dist/aos.css"; // Pastikan CSS juga diimport
+import { ChevronRight, Map, X } from "lucide-react";
+import { locations, Location } from "../data/locationsData"; // Import the Location type
+import { regionCategories } from "../data/regionCategories";
+import { motion, AnimatePresence } from "framer-motion";
 
-// Filter categories for destinations
-const regionCategories = [
-  { key: "all", label: "All Regions" },
-  { key: "java", label: "Java" },
-  { key: "sumatra", label: "Sumatra" },
-  { key: "bali", label: "Bali & Nusa Tenggara" },
-  { key: "kalimantan", label: "Kalimantan" },
-  { key: "sulawesi", label: "Sulawesi" },
-  { key: "maluku", label: "Maluku & Papua" },
-];
+// Reusable animations
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const fadeDown = {
+  hidden: { opacity: 0, y: -30 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const modalVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
+  exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } }
+};
+
+interface MapModalProps {
+  isOpen: boolean;
+  locationName: string;
+  mapUrl: string;
+  onClose: () => void;
+}
+
+// Map Modal Component
+function MapModal({ isOpen, locationName, mapUrl, onClose }: MapModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <motion.div
+            className="bg-white rounded-lg shadow-xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col"
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-xl font-semibold text-gray-800">{locationName} Location</h3>
+              <button 
+                onClick={onClose}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <div className="w-full h-[70vh]">
+              <iframe
+                src={mapUrl}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={true}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title={`Map of ${locationName}`}
+              ></iframe>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// Define the type for selected location state
+interface SelectedLocation {
+  id: number | null;
+  name: string;
+  mapUrl: string;
+}
 
 export function DestinationCards() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [filteredLocations, setFilteredLocations] = useState(locations);
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation>({
+    id: null,
+    name: "",
+    mapUrl: ""
+  });
   const navigate = useNavigate();
 
-  // Initialize AOS
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: false,
-      mirror: false, // Ini yang diubah untuk menghilangkan animasi saat scroll up
-      offset: 120,
-      easing: "ease-in-out",
-    });
-  }, []);
-
-  // Filter destinations when category changes
+  // Filter data based on category
   useEffect(() => {
     if (activeCategory === "all") {
       setFilteredLocations(locations);
@@ -66,16 +125,57 @@ export function DestinationCards() {
     }
   }, [activeCategory]);
 
+  // Open map modal
+  const openMapModal = (e: MouseEvent<HTMLButtonElement>, location: Location) => {
+    e.stopPropagation(); // Prevent card click event
+    setSelectedLocation({
+      id: location.id,
+      name: location.name,
+      mapUrl: location.mapUrl
+    });
+    setIsMapOpen(true);
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Close map modal
+  const closeMapModal = () => {
+    setIsMapOpen(false);
+    setSelectedLocation({
+      id: null,
+      name: "",
+      mapUrl: ""
+    });
+    // Restore body scrolling
+    document.body.style.overflow = 'auto';
+  };
+
+  // Close modal if escape key is pressed
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeMapModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleEsc);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, []);
+
   return (
     <>
       {/* Filter Categories */}
-      <div
+      <motion.div
         className="flex flex-wrap gap-2 mb-8"
-        data-aos="fade-down"
-        data-aos-duration="1000"
+        variants={fadeDown}
+        initial="hidden"
+        whileInView="visible"
+        transition={{ duration: 0.6 }}
       >
         {regionCategories.map((category, index) => (
-          <button
+          <motion.button
             key={category.key}
             className={`px-5 py-2 rounded-full flex items-center ${
               activeCategory === category.key
@@ -83,9 +183,8 @@ export function DestinationCards() {
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
             onClick={() => setActiveCategory(category.key)}
-            data-aos="flip-up"
-            data-aos-delay={index * 80}
-            data-aos-duration="600"
+            variants={fadeUp}
+            transition={{ delay: index * 0.08 }}
           >
             {category.key === "all" && (
               <span className="mr-2 rounded-full bg-blue-800 p-1">
@@ -105,20 +204,22 @@ export function DestinationCards() {
               </span>
             )}
             {category.label}
-          </button>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
 
       {/* Destinations Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredLocations.map((location, index) => (
-          <div
+          <motion.div
             key={location.id}
             className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
             onClick={() => navigate(location.link)}
-            data-aos="fade-up"
-            data-aos-delay={index * 100}
-            data-aos-duration="800"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ amount: 0.2 }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
           >
             <div className="h-48 overflow-hidden">
               <img
@@ -134,14 +235,31 @@ export function DestinationCards() {
               <p className="text-gray-600 mb-4 line-clamp-2">
                 {location.description}
               </p>
-              <span className="inline-flex items-center text-blue-900 font-medium hover:underline">
-                Explore Details
-                <ChevronRight className="ml-1 h-4 w-4" />
-              </span>
+              <div className="flex justify-between items-center">
+                <span className="inline-flex items-center text-blue-900 font-medium hover:underline">
+                  Explore Details
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </span>
+                <button 
+                  onClick={(e) => openMapModal(e, location)}
+                  className="flex items-center text-green-600 hover:text-green-800"
+                >
+                  <Map className="h-5 w-5 mr-1" />
+                  View Map
+                </button>
+              </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
+
+      {/* Map Modal */}
+      <MapModal 
+        isOpen={isMapOpen} 
+        locationName={selectedLocation.name} 
+        mapUrl={selectedLocation.mapUrl} 
+        onClose={closeMapModal} 
+      />
     </>
   );
 }

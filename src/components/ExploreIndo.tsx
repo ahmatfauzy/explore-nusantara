@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const fadeVariants = {
   hidden: { opacity: 0, y: 40 },
-  visible: (delay: number = 0) => ({
+  visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
     transition: { duration: 0.8, delay },
@@ -25,11 +25,11 @@ const ExploreIndo = () => {
   };
 
   return (
-    <div className="relative w-full text-white min-h-screen overflow-x-hidden">
+    <div className="relative w-full text-white overflow-x-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('images/borobudur.jpeg')" }}
+        style={{ backgroundImage: "url('images/tempat/borobudur.jpeg')" }}
       />
       <div className="absolute inset-0 bg-black opacity-90" />
       <div className="absolute inset-0 opacity-10 bg-cover bg-center" />
@@ -120,7 +120,7 @@ const ExploreIndo = () => {
             </motion.div>
           </div>
 
-          {/* Right Content */}
+          {/* Right Content - Fixed height container */}
           <motion.div
             className="lg:w-1/2"
             variants={fadeVariants}
@@ -129,7 +129,7 @@ const ExploreIndo = () => {
             viewport={{ amount: 0.3 }}
             custom={0.6}
           >
-            <div className="overflow-hidden relative h-96 md:h-full">
+            <div className="overflow-hidden relative h-64 sm:h-80 md:h-96 lg:h-96">
               {slideData.map(
                 (slide, index) =>
                   index === activeIndex && (
@@ -142,7 +142,8 @@ const ExploreIndo = () => {
                         <img
                           src={slide.image}
                           alt={slide.title}
-                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                          className="w-full h-full object-cover"
+                          style={{ objectPosition: "center" }}
                         />
                         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-black/90 via-black/70 to-transparent pt-12">
                           <h3 className="text-xl md:text-2xl font-bold mb-2 line-clamp-2">

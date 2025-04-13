@@ -1,7 +1,7 @@
 export const infoCards = [
   {
     title: "Visa & Entry Requirements",
-    image: "/images/foto.jpg",
+    image: "/images/visa.png",
     alt: "Visa and passport documents for Indonesia",
     link: "/information/visa-requirements",
     description:
@@ -10,7 +10,7 @@ export const infoCards = [
   },
   {
     title: "Travel Checklist",
-    image: "/images/borobudur.jpeg",
+    image: "/images/travel-checklist.png",
     alt: "Travel essentials checklist for Indonesia",
     link: "/information/travel-checklist",
     description:
@@ -19,7 +19,7 @@ export const infoCards = [
   },
   {
     title: "Currency & Payment",
-    image: "/images/foto.jpg",
+    image: "/images/payment.png",
     alt: "Indonesian currency and payment methods",
     link: "/information/currency-payment",
     description:
@@ -37,7 +37,7 @@ export const infoCards = [
   // },
   {
     title: "Cultural Etiquette",
-    image: "/images/foto.jpg",
+    image: "/images/budaya.png",
     alt: "Indonesian cultural customs",
     link: "/information/cultural-etiquette",
     description:

@@ -155,11 +155,13 @@ const Navbar = () => {
       <div className="flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center">
-          <img
-            src={isScrolled ? "/icon1.png" : "/icon2.png"}
-            alt="ExploreNusantara Logo"
-            className="h-8 md:h-12 w-auto"
-          />
+          <a href="/">
+            <img
+              src={isScrolled ? "/icon1.png" : "/icon2.png"}
+              alt="ExploreNusantara Logo"
+              className="h-8 md:h-12 w-auto"
+            />
+          </a>
         </div>
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center">
@@ -321,13 +323,15 @@ const Navbar = () => {
             </button>
 
             {/* Logo at the top left */}
-            <div className="absolute top-6 left-6">
-              <img
-                src="/icon1.png"
-                alt="ExploreNusantara Logo"
-                className="h-8 w-auto"
-              />
-            </div>
+            <a href="/">
+              <div className="absolute top-6 left-6">
+                <img
+                  src="/icon1.png"
+                  alt="ExploreNusantara Logo"
+                  className="h-8 w-auto"
+                />
+              </div>
+            </a>
 
             {/* Menu items */}
             <nav className="flex flex-col space-y-4 mt-6">

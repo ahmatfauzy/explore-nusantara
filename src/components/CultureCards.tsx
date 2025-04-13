@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { cultureData } from "../data/cultureData";
-import AOS from "aos";
-import "aos/dist/aos.css"; // Pastikan CSS diimport
+import { motion } from "framer-motion";
 
 // Filter categories for culture
 const cultureCategories = [
@@ -15,23 +14,22 @@ const cultureCategories = [
   { key: "martial-art", label: "Martial Arts" },
 ];
 
+// Animation variants
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const fadeDown = {
+  hidden: { opacity: 0, y: -30 },
+  visible: { opacity: 1, y: 0 },
+};
+
 export function CultureCards() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [filteredItems, setFilteredItems] = useState(cultureData);
   const navigate = useNavigate();
 
-  // Initialize AOS
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: false,
-      mirror: false, // Ini yang diubah untuk menghilangkan animasi saat scroll up
-      offset: 120,
-      easing: 'ease-in-out',
-    });
-  }, []);
-
-  // Filter items when category changes
   useEffect(() => {
     if (activeCategory === "all") {
       setFilteredItems(cultureData);
@@ -46,13 +44,16 @@ export function CultureCards() {
   return (
     <>
       {/* Filter Categories */}
-      <div 
+      <motion.div
         className="flex flex-wrap gap-2 mb-8"
-        data-aos="fade-down"
-        data-aos-duration="800"
+        variants={fadeDown}
+        initial="hidden"
+        whileInView="visible"
+        // viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
       >
         {cultureCategories.map((category, index) => (
-          <button
+          <motion.button
             key={category.key}
             className={`px-5 py-2 rounded-full flex items-center ${
               activeCategory === category.key
@@ -60,8 +61,8 @@ export function CultureCards() {
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
             onClick={() => setActiveCategory(category.key)}
-            data-aos="fade-up"
-            data-aos-delay={index * 80}
+            variants={fadeUp}
+            transition={{ delay: index * 0.08 }}
           >
             {category.key === "all" && (
               <span className="mr-2 rounded-full bg-blue-800 p-1">
@@ -81,19 +82,22 @@ export function CultureCards() {
               </span>
             )}
             {category.label}
-          </button>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
 
       {/* Culture Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredItems.map((item, index) => (
-          <div
+          <motion.div
             key={item.id}
             className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
             onClick={() => navigate(item.link)}
-            data-aos="fade-up"
-            data-aos-delay={index * 100}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ amount: 0.2 }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
           >
             <div className="h-48 overflow-hidden">
               <img
@@ -121,7 +125,7 @@ export function CultureCards() {
                 <ChevronRight className="ml-1 h-4 w-4" />
               </span>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </>

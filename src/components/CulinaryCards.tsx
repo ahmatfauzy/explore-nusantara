@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { culinaryData } from "../data/culinaryData";
-import AOS from "aos";
-import "aos/dist/aos.css"; // Make sure CSS is imported
+import { motion } from "framer-motion";
 
 // Filter categories for culinary
 const culinaryCategories = [
@@ -12,21 +11,16 @@ const culinaryCategories = [
   { key: "drink", label: "Drinks" },
 ];
 
+// Animations
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
+
 export function CulinaryCards() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [filteredItems, setFilteredItems] = useState(culinaryData);
   const navigate = useNavigate();
-
-  // Initialize AOS with mirror:false to disable reverse animations
-  useEffect(() => {
-    AOS.init({
-      duration: 700,
-      once: false,
-      mirror: false, // Disables animations on scroll up
-      offset: 120,
-      easing: 'ease-in-out',
-    });
-  }, []);
 
   // Filter items when category changes
   useEffect(() => {
@@ -42,13 +36,17 @@ export function CulinaryCards() {
 
   return (
     <>
-      {/* Filter Categories - Simplified animations */}
-      <div 
+      {/* Filter Categories */}
+      <motion.div
         className="flex flex-wrap gap-2 mb-8"
-        data-aos="fade-up"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        // viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
       >
         {culinaryCategories.map((category, index) => (
-          <button
+          <motion.button
             key={category.key}
             className={`px-5 py-2 rounded-full flex items-center ${
               activeCategory === category.key
@@ -56,8 +54,8 @@ export function CulinaryCards() {
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
             onClick={() => setActiveCategory(category.key)}
-            data-aos="fade-up"
-            data-aos-delay={index * 80}
+            variants={fadeUp}
+            transition={{ delay: index * 0.08 }}
           >
             {category.key === "all" && (
               <span className="mr-2 rounded-full bg-blue-800 p-1">
@@ -77,19 +75,22 @@ export function CulinaryCards() {
               </span>
             )}
             {category.label}
-          </button>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
 
-      {/* Culinary Grid - Cleaner animations */}
+      {/* Culinary Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredItems.map((item, index) => (
-          <div 
+          <motion.div
             key={item.id}
             className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
             onClick={() => navigate(item.link)}
-            data-aos="fade-up"
-            data-aos-delay={index * 100}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ amount: 0.2 }}
+            transition={{ delay: index * 0.1, duration: 0.4 }}
           >
             <div className="h-48 overflow-hidden">
               <img
@@ -115,7 +116,7 @@ export function CulinaryCards() {
                 <ChevronRight className="ml-1 h-4 w-4" />
               </span>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </>
