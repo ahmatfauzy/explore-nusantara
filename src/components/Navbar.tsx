@@ -1,12 +1,38 @@
-import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Menu, X, ChevronDown, ArrowRight, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { infoCards } from "../data/info";
+import { culinaryData, Culinary } from "../data/culinaryData";
+import { cultureData, Culture } from "../data/cultureData";
+import { eventsData } from "../data/allEventsData";
+import { locations, Location } from "../data/locationsData"; // Import the locations data
+
+// Event interface to better type the event data
+interface Event {
+  id: number;
+  title: string;
+  category: string;
+  date: string;
+  location: string;
+  image: string;
+  path: string;
+  text: string;
+  link?: string;
+}
+
+// Type data that combines all searchable data types
+type SearchItem = Culinary | Culture | Event | Location; // Add Location to SearchItem type
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isInfoDropdownOpen, setIsInfoDropdownOpen] = useState(false);
+
+  // State for search
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchItem[]>([]);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,6 +64,83 @@ const Navbar = () => {
   // Handle mobile dropdown toggle separately
   const toggleMobileInfoDropdown = () => {
     setIsInfoDropdownOpen(!isInfoDropdownOpen);
+  };
+
+  // Toggle search panel
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    setSearchQuery("");
+    setSearchResults([]);
+
+    // Auto focus search input when opening
+    if (!isSearchOpen && searchInputRef.current) {
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 300);
+    }
+  };
+
+  // Handle search functionality
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.trim() === "") {
+      setSearchResults([]);
+      return;
+    }
+
+    const lowerQuery = query.toLowerCase();
+
+    // Search in all data sources
+    const cultureResults = cultureData.filter(
+      (item) =>
+        item.name.toLowerCase().includes(lowerQuery) ||
+        item.description.toLowerCase().includes(lowerQuery) ||
+        item.category.toLowerCase().includes(lowerQuery) ||
+        item.region.toLowerCase().includes(lowerQuery)
+    );
+
+    const culinaryResults = culinaryData.filter(
+      (item) =>
+        item.name.toLowerCase().includes(lowerQuery) ||
+        item.description.toLowerCase().includes(lowerQuery) ||
+        item.category.toLowerCase().includes(lowerQuery) ||
+        item.region.toLowerCase().includes(lowerQuery)
+    );
+
+    const eventResults = eventsData
+      .filter(
+        (item) =>
+          item.title.toLowerCase().includes(lowerQuery) ||
+          item.category.toLowerCase().includes(lowerQuery) ||
+          item.location.toLowerCase().includes(lowerQuery) ||
+          item.text.toLowerCase().includes(lowerQuery)
+      )
+      .map((event) => ({
+        ...event,
+        link: event.path, // Standardize link property for consistent display
+      }));
+
+    // Add location search results
+    const locationResults = locations
+      .filter(
+        (item) =>
+          item.name.toLowerCase().includes(lowerQuery) ||
+          item.description.toLowerCase().includes(lowerQuery)
+      )
+      .map((location) => ({
+        ...location,
+        category: "Destination", // Add a category label for locations
+      }));
+
+    // Combine and sort results
+    setSearchResults([
+      ...cultureResults,
+      ...culinaryResults,
+      ...eventResults,
+      ...locationResults,
+    ]);
   };
 
   // Close dropdown when clicking outside
@@ -144,6 +247,75 @@ const Navbar = () => {
         duration: 0.3,
       },
     },
+  };
+
+  // Search panel animation variants
+  const searchPanelVariants = {
+    hidden: {
+      opacity: 0,
+      y: "-5%",
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: "-5%",
+      transition: {
+        duration: 0.2,
+        ease: "easeIn",
+      },
+    },
+  };
+
+  // Function to get item name or title
+  const getItemTitle = (item: SearchItem): string => {
+    if ("name" in item && typeof item.name === "string") {
+      return item.name;
+    } else if ("title" in item && typeof item.title === "string") {
+      return item.title;
+    }
+    return "Untitled";
+  };
+
+  // Function to get item description or text
+  const getItemDescription = (item: SearchItem): string => {
+    if ("description" in item && typeof item.description === "string") {
+      return item.description;
+    } else if ("text" in item && typeof item.text === "string") {
+      return item.text;
+    }
+    return "";
+  };
+
+  // Function to get the URL from the item
+  const getItemUrl = (item: SearchItem): string => {
+    if ("link" in item && item.link) {
+      return item.link;
+    } else if ("path" in item) {
+      return (item as Event).path;
+    }
+    return "#";
+  };
+
+  // Type guard function to check if the item is a Location
+  const isLocation = (item: SearchItem): item is Location => {
+    return "mapUrl" in item;
+  };
+
+  // Type guard function to check if the item is an Event
+  const isEvent = (item: SearchItem): item is Event => {
+    return "title" in item && "date" in item && "location" in item;
+  };
+
+  // Type guard function to check if the item has a region property
+  const hasRegion = (item: SearchItem): item is Culinary | Culture => {
+    return "region" in item;
   };
 
   return (
@@ -273,36 +445,68 @@ const Navbar = () => {
             </div>
           </div>
         </nav>
+
+        {/* Search button - desktop */}
+        <div className="hidden md:flex">
+          <button
+            onClick={toggleSearch}
+            className={`p-2 rounded-full transition-colors duration-300 ml-6 ${
+              isScrolled
+                ? "text-black hover:bg-gray-100"
+                : "text-white hover:bg-white/10"
+            }`}
+            aria-label="Search"
+          >
+            <Search size={22} />
+          </button>
+        </div>
+
         {/* Mobile Menu Button with animation */}
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          className={`md:hidden p-1 rounded-md transition-colors duration-300 ${
-            isScrolled
-              ? "text-black hover:bg-gray-100"
-              : "text-white hover:bg-white/10"
-          }`}
-          onClick={toggleMobileMenu}
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? (
-            <motion.div
-              initial={{ rotate: 0 }}
-              animate={{ rotate: 180 }}
-              transition={{ duration: 0.3 }}
-            >
-              <X size={24} />
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ rotate: 0 }}
-              animate={{ rotate: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Menu size={24} />
-            </motion.div>
-          )}
-        </motion.button>
+        <div className="md:hidden flex items-center">
+          {/* Search button - mobile */}
+          <button
+            onClick={toggleSearch}
+            className={`p-2 mr-2 transition-colors duration-300 ${
+              isScrolled
+                ? "text-black hover:bg-gray-100"
+                : "text-white hover:bg-white/10"
+            }`}
+            aria-label="Search"
+          >
+            <Search size={22} />
+          </button>
+
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            className={`p-1 rounded-md transition-colors duration-300 ${
+              isScrolled
+                ? "text-black hover:bg-gray-100"
+                : "text-white hover:bg-white/10"
+            }`}
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <motion.div
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 180 }}
+                transition={{ duration: 0.3 }}
+              >
+                <X size={24} />
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Menu size={24} />
+              </motion.div>
+            )}
+          </motion.button>
+        </div>
       </div>
+
       {/* Full-screen Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -449,6 +653,200 @@ const Navbar = () => {
                 </AnimatePresence>
               </motion.div>
             </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Full-screen Search Panel */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={searchPanelVariants}
+            className="fixed top-0 left-0 w-full h-full bg-white z-50 pt-24 pb-6 px-6 overflow-y-auto"
+          >
+            {/* Close button at the top right */}
+            <button
+              className="absolute top-6 right-6 p-2 hover:bg-gray-100 rounded-full transition-all duration-300"
+              onClick={toggleSearch}
+              aria-label="Close search"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Logo at the top left */}
+            <a href="/">
+              <div className="absolute top-6 left-6">
+                <img
+                  src="/icon1.png"
+                  alt="ExploreNusantara Logo"
+                  className="h-8 w-auto"
+                />
+              </div>
+            </a>
+
+            {/* Search input */}
+            <div className="max-w-4xl mx-auto">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                  <Search size={20} className="text-gray-400" />
+                </div>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  placeholder="Search destinations, culture, events, or culinary"
+                  className="w-full py-4 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                />
+              </div>
+
+              {/* Search results */}
+              <div className="mt-8">
+                {searchQuery.trim() !== "" && (
+                  <h2 className="text-xl font-semibold mb-6">
+                    {searchResults.length === 0
+                      ? "No results found"
+                      : `Search results for "${searchQuery}"`}
+                  </h2>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {searchResults.map((item) => (
+                    <motion.a
+                      key={`${getItemTitle(item)}-${item.id}`}
+                      href={getItemUrl(item)}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                      onClick={toggleSearch}
+                    >
+                      <div className="aspect-w-16 aspect-h-9 overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={getItemTitle(item)}
+                          className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
+                            {getItemTitle(item)}
+                          </h3>
+                          {/* <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+                            {item.category}
+                          </span> */}
+                        </div>
+                        {isEvent(item) && (
+                          <p className="text-sm text-gray-600 mb-2">
+                            <span className="font-medium">When:</span>{" "}
+                            {item.date}
+                          </p>
+                        )}
+                        {isEvent(item) && (
+                          <p className="text-sm text-gray-600 mb-2">
+                            <span className="font-medium">Where:</span>{" "}
+                            {item.location}
+                          </p>
+                        )}
+                        {hasRegion(item) && (
+                          <p className="text-sm text-gray-600 mb-2">
+                            <span className="font-medium">Region:</span>{" "}
+                            {item.region}
+                          </p>
+                        )}
+                        {isLocation(item) && (
+                          <p className="text-sm text-gray-600 mb-2">
+                            <span className="font-medium">Destination:</span>{" "}
+                            Indonesia
+                          </p>
+                        )}
+                        <p className="text-sm text-gray-600 line-clamp-3 mt-2">
+                          {getItemDescription(item)}
+                        </p>
+                      </div>
+                    </motion.a>
+                  ))}
+                </div>
+              </div>
+
+              {/* No search query yet - Show featured content */}
+              {searchQuery.trim() === "" && (
+                <div className="mt-8">
+                  <h2 className="text-xl font-semibold mb-6">
+                    Popular Discoveries
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Featured item 1 */}
+                    <a
+                      href="/events/bali-arts-festival-2025"
+                      className="relative overflow-hidden rounded-lg group cursor-pointer"
+                      onClick={toggleSearch}
+                    >
+                      <div className="aspect-w-16 aspect-h-9 w-full overflow-hidden">
+                        <img
+                          src="/images/events/bali-arts.png"
+                          alt="Bali Arts Festival"
+                          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent flex flex-col justify-end p-4">
+                        <h4 className="text-white font-semibold text-lg mb-1">
+                          Bali Arts Festival
+                        </h4>
+                        <p className="text-white/80 text-sm">
+                          Jun 14 - Jul 12, 2025
+                        </p>
+                      </div>
+                    </a>
+                    {/* Featured location instead of culinary */}
+                    <a
+                      href="/destination/borobudur"
+                      className="relative overflow-hidden rounded-lg group cursor-pointer"
+                      onClick={toggleSearch}
+                    >
+                      <div className="aspect-w-16 aspect-h-9 w-full overflow-hidden">
+                        <img
+                          src="/images/tempat/borobudur.jpeg"
+                          alt="Borobudur Temple"
+                          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent flex flex-col justify-end p-4">
+                        <h4 className="text-white font-semibold text-lg mb-1">
+                          Borobudur Temple
+                        </h4>
+                        <p className="text-white/80 text-sm">Central Java</p>
+                      </div>
+                    </a>
+                    {/* Featured item 3 */}
+                    <a
+                      href="/culture/wayang-kulit"
+                      className="relative overflow-hidden rounded-lg group cursor-pointer"
+                      onClick={toggleSearch}
+                    >
+                      <div className="aspect-w-16 aspect-h-9 w-full overflow-hidden">
+                        <img
+                          src="https://i.pinimg.com/736x/d0/39/7b/d0397b752a24db2bd60fcb9863cdf99a.jpg"
+                          alt="Wayang Kulit"
+                          className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent flex flex-col justify-end p-4">
+                        <h4 className="text-white font-semibold text-lg mb-1">
+                          Wayang Kulit
+                        </h4>
+                        <p className="text-white/80 text-sm">
+                          Traditional Shadow Puppet Theatre
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
