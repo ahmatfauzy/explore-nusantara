@@ -12,7 +12,7 @@ export interface Event {
 export const events: Event[] = [
   {
     id: 1,
-    category: "arts",
+    category: "Arts",
     title: "Lom Plai Traditional and Cultural Festival",
     date: "Apr 01 - May 31, 2025",
     location: "Kutai Kartanegara, East Kalimantan",
@@ -22,7 +22,7 @@ export const events: Event[] = [
   },
   {
     id: 2,
-    category: "sports",
+    category: "Sports",
     title: "Mandalika Racing Series (1st Round)",
     date: "Apr 11 - 13, 2025",
     location: "Mandalika Circuit, Lombok, West Nusa Tenggara",
@@ -32,7 +32,7 @@ export const events: Event[] = [
   },
   {
     id: 3,
-    category: "music",
+    category: "Music",
     title: "Dendang Piwang Music Festival",
     date: "Apr 13 - Oct 13, 2025",
     location: "Natuna Regency, Riau Islands",
@@ -42,7 +42,7 @@ export const events: Event[] = [
   },
   {
     id: 4,
-    category: "culinary",
+    category: "Culinary",
     title: "Pasar Terapung Culinary Festival",
     date: "May 15 - 18, 2025",
     location: "Banjarmasin, South Kalimantan",

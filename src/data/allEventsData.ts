@@ -12,7 +12,7 @@ interface Event {
 export const eventsData: Event[] = [
   {
     id: 1,
-    category: "arts",
+    category: "Arts",
     title: "Lom Plai Traditional and Cultural Festival",
     date: "Apr 01 - May 31, 2025",
     location: "Kutai Kartanegara, East Kalimantan",
@@ -22,7 +22,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 2,
-    category: "sports",
+    category: "Sports",
     title: "Mandalika Racing Series (1st Round)",
     date: "Apr 11 - 13, 2025",
     location: "Mandalika Circuit, Lombok, West Nusa Tenggara",
@@ -32,7 +32,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 3,
-    category: "music",
+    category: "Music",
     title: "Dendang Piwang Music Festival",
     date: "Apr 13 - Oct 13, 2025",
     location: "Natuna Regency, Riau Islands",
@@ -42,7 +42,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 4,
-    category: "culinary",
+    category: "Culinary",
     title: "Pasar Terapung Culinary Festival",
     date: "May 15 - 18, 2025",
     location: "Banjarmasin, South Kalimantan",
@@ -52,7 +52,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 5,
-    category: "creative",
+    category: "Creative",
     title: "Makassar International Writers Festival",
     date: "Jun 10 - 15, 2025",
     location: "Fort Rotterdam, Makassar, South Sulawesi",
@@ -62,7 +62,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 6,
-    category: "carnaval",
+    category: "Carnaval",
     title: "Solo Batik Carnival",
     date: "Jul 12 - 13, 2025",
     location: "Surakarta (Solo), Central Java",
@@ -72,7 +72,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 7,
-    category: "mice",
+    category: "Mice",
     title: "Indonesia Maritime Expo & Conference",
     date: "Aug 20 - 23, 2025",
     location: "Jakarta Convention Center",
@@ -82,7 +82,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 8,
-    category: "arts",
+    category: "Arts",
     title: "Bali Arts Festival",
     date: "Jun 14 - Jul 12, 2025",
     location: "Denpasar Art Centre, Bali",
@@ -92,7 +92,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 9,
-    category: "music",
+    category: "Music",
     title: "Prambanan Jazz Festival",
     date: "Jul 18 - 20, 2025",
     location: "Prambanan Temple, Yogyakarta",
@@ -102,7 +102,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 10,
-    category: "sports",
+    category: "Sports",
     title: "Tour de Flores",
     date: "Sep 05 - 10, 2025",
     location: "Flores Island, East Nusa Tenggara",
@@ -112,7 +112,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 11,
-    category: "culinary",
+    category: "Culinary",
     title: "Jakarta Culinary Feastival",
     date: "Oct 24 - 27, 2025",
     location: "Senayan City, Jakarta",
@@ -122,7 +122,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 12,
-    category: "creative",
+    category: "Creative",
     title: "Jogja International Heritage Walk",
     date: "Oct 31 - Nov 02, 2025",
     location: "Various Heritage Sites, Yogyakarta",
@@ -132,7 +132,7 @@ export const eventsData: Event[] = [
   },
   {
     id: 13,
-    category: "carnaval",
+    category: "Carnaval",
     title: "Tomohon International Flower Festival",
     date: "Aug 08 - 12, 2025",
     location: "Tomohon, North Sulawesi",

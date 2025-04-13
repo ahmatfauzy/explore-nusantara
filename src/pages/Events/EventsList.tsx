@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { eventsData } from "../../data/allEventsData";
 import { categories } from "../../data/categories";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -19,6 +19,7 @@ export default function EventsList() {
   const [filteredEvents, setFilteredEvents] = useState(eventsData);
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
+  const eventsGridRef = useRef(null);
 
   const featuredEvents = eventsData.slice(0, 4);
 
@@ -30,6 +31,14 @@ export default function EventsList() {
         event.category.toLowerCase().includes(activeCategory.toLowerCase())
       );
       setFilteredEvents(filtered);
+    }
+    
+    // Force all events to be visible immediately after category change
+    // by resetting the scroll position slightly
+    if (eventsGridRef.current) {
+      const currentScrollPos = window.scrollY;
+      window.scrollTo(0, currentScrollPos - 1);
+      window.scrollTo(0, currentScrollPos);
     }
   }, [activeCategory]);
 
@@ -113,7 +122,7 @@ export default function EventsList() {
           className="mb-8"
           variants={fadeUp}
           initial="hidden"
-          whileInView="visible"
+          animate="visible" // Changed from whileInView to animate
           viewport={{ amount: 0.3 }}
         >
           <p className="text-blue-900 font-medium mb-2">
@@ -130,7 +139,7 @@ export default function EventsList() {
         <motion.div
           className="flex flex-wrap gap-2 mb-12"
           initial="hidden"
-          whileInView="visible"
+          animate="visible" // Changed from whileInView to animate
           variants={fadeUp}
           viewport={{ amount: 0.2 }}
         >
@@ -169,46 +178,51 @@ export default function EventsList() {
         </motion.div>
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredEvents.map((event, i) => (
-            <motion.div
-              key={event.path}
-              custom={i}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{  amount: 0.2 }}
-              onClick={() => navigate(event.path)}
-              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
-            >
-              <div className="h-48 overflow-hidden">
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-full object-cover hover:scale-105 transition duration-300"
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center mb-2">
-                  <span className="text-sm text-blue-600 font-medium">
-                    {event.category}
+        <div 
+          ref={eventsGridRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          <AnimatePresence>
+            {filteredEvents.map((event, i) => (
+              <motion.div
+                key={event.path}
+                custom={i}
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible" // Changed from whileInView to animate
+                layout // Added layout prop to handle position changes smoothly
+                onClick={() => navigate(event.path)}
+                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
+              >
+                <div className="h-48 overflow-hidden">
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center mb-2">
+                    <span className="text-sm text-blue-600 font-medium">
+                      {event.category}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-2 text-gray-800">
+                    {event.title}
+                  </h3>
+                  <div className="flex items-center text-gray-600 mb-4">
+                    <span className="text-sm">
+                      {event.date} | {event.location}
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center text-blue-900 font-medium hover:underline">
+                    See Details
+                    <ChevronRight className="ml-1 h-4 w-4" />
                   </span>
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-800">
-                  {event.title}
-                </h3>
-                <div className="flex items-center text-gray-600 mb-4">
-                  <span className="text-sm">
-                    {event.date} | {event.location}
-                  </span>
-                </div>
-                <span className="inline-flex items-center text-blue-900 font-medium hover:underline">
-                  See Details
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </span>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </div>

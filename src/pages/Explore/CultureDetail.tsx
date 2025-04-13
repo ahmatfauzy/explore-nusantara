@@ -16,15 +16,18 @@ export default function CultureDetail() {
   const currentIndex = cultureData.findIndex(
     (item) => item.link === `/culture/${culturePath}`
   );
-  
+
   const cultureItem = currentIndex !== -1 ? cultureData[currentIndex] : null;
-  
+
   const prevItem = currentIndex > 0 ? cultureData[currentIndex - 1] : null;
-  const nextItem = currentIndex < cultureData.length - 1 ? cultureData[currentIndex + 1] : null;
+  const nextItem =
+    currentIndex < cultureData.length - 1
+      ? cultureData[currentIndex + 1]
+      : null;
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [culturePath]); // Add culturePath as dependency to scroll to top when it changes
 
   if (!cultureItem) {
     return (
@@ -57,10 +60,11 @@ export default function CultureDetail() {
     "Modern preservation efforts",
   ];
 
-  const handleNavigation = (path? : string) => {
+  const handleNavigation = (path?: string) => {
     if (path) {
-      const newPath = path.replace('/culture/', '');
+      const newPath = path.replace("/culture/", "");
       navigate(`/culture/${newPath}`);
+      // Scroll to top is now handled by the useEffect with culturePath dependency
     }
   };
 
@@ -128,7 +132,7 @@ export default function CultureDetail() {
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ amount: 0.2 }}
             transition={{ duration: 0.5 }}
           >
             About {cultureItem.name}
@@ -143,7 +147,7 @@ export default function CultureDetail() {
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
+                viewport={{ amount: 0.2 }}
                 transition={{ delay: 0.1 * index }}
               >
                 {paragraph}
@@ -157,7 +161,7 @@ export default function CultureDetail() {
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ amount: 0.2 }}
             transition={{ delay: 0.2 }}
           >
             <h3 className="text-2xl font-bold mb-4 text-gray-800">
@@ -191,7 +195,7 @@ export default function CultureDetail() {
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ amount: 0.2 }}
             transition={{ delay: 0.2 }}
           >
             <h3 className="text-2xl font-bold mb-4 text-gray-800">
@@ -216,22 +220,22 @@ export default function CultureDetail() {
               </motion.li>
             </ul>
           </motion.div>
-          
+
           {/* Navigation Buttons - Previous & Next */}
           <motion.div
             className="mt-16 flex justify-between items-center"
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ amount: 0.2 }}
             transition={{ delay: 0.5 }}
           >
             <div className="flex items-center">
               <button
                 onClick={() => handleNavigation(prevItem?.link)}
                 className={`mr-3 flex items-center justify-center p-3 rounded-full transition ${
-                  prevItem 
-                    ? "bg-blue-900 text-white hover:bg-blue-800" 
+                  prevItem
+                    ? "bg-blue-900 text-white hover:bg-blue-800"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
                 disabled={!prevItem}
@@ -239,28 +243,36 @@ export default function CultureDetail() {
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              
+
               {prevItem && (
                 <div className="flex flex-col">
-                  <span className="font-medium text-gray-800">{prevItem.name}</span>
-                  <span className="text-sm text-gray-600">{prevItem.region}</span>
+                  <span className="font-medium text-gray-800">
+                    {prevItem.name}
+                  </span>
+                  <span className="text-sm text-gray-600">
+                    {prevItem.region}
+                  </span>
                 </div>
               )}
             </div>
-            
+
             <div className="flex items-center">
               {nextItem && (
                 <div className="flex flex-col items-end">
-                  <span className="font-medium text-gray-800">{nextItem.name}</span>
-                  <span className="text-sm text-gray-600">{nextItem.region}</span>
+                  <span className="font-medium text-gray-800">
+                    {nextItem.name}
+                  </span>
+                  <span className="text-sm text-gray-600">
+                    {nextItem.region}
+                  </span>
                 </div>
               )}
-              
+
               <button
                 onClick={() => handleNavigation(nextItem?.link)}
                 className={`ml-3 flex items-center justify-center p-3 rounded-full transition ${
-                  nextItem 
-                    ? "bg-blue-900 text-white hover:bg-blue-800" 
+                  nextItem
+                    ? "bg-blue-900 text-white hover:bg-blue-800"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
                 disabled={!nextItem}

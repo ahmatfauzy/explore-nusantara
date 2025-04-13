@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Location, locations } from "../../data/locationsData";
 import { Culture, cultureData } from "../../data/cultureData";
@@ -44,6 +44,12 @@ const ExplorePage = () => {
     setCurrentSlide((prev) =>
       prev === 0 ? featuredItems.length - 1 : prev - 1
     );
+  };
+
+  // Function to navigate and scroll to top
+  const navigateAndScrollToTop = (path: string) => {
+    navigate(path);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -103,13 +109,13 @@ const ExplorePage = () => {
                   viewport={{ once: false, amount: 0.3 }}
                   transition={{ delay: 0.4 }}
                 >
-                  <Link
-                    to={item.link}
+                  <button
+                    onClick={() => navigateAndScrollToTop(item.link)}
                     className="inline-flex items-center px-4 py-2 bg-white text-blue-900 font-medium rounded hover:bg-blue-50 transition"
                   >
                     EXPLORE DESTINATION
                     <ChevronRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  </button>
                 </motion.div>
               </div>
             </div>
@@ -150,13 +156,13 @@ const ExplorePage = () => {
               <h2 className="text-4xl font-bold text-blue-900">
                 Wonderful Destinations
               </h2>
-              <Link
-                to="/destinations"
+              <button
+                onClick={() => navigateAndScrollToTop("/destinations")}
                 className="text-blue-900 font-medium hover:underline flex items-center"
               >
                 Explore More
                 <ChevronRight className="ml-1 h-4 w-4" />
-              </Link>
+              </button>
             </div>
           </motion.div>
 
@@ -164,7 +170,7 @@ const ExplorePage = () => {
             {displayLocations.map((location, index) => (
               <motion.div
                 key={location.id}
-                onClick={() => navigate(location.link)}
+                onClick={() => navigateAndScrollToTop(location.link)}
                 className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
                 variants={fadeUp}
                 initial="hidden"
@@ -214,13 +220,13 @@ const ExplorePage = () => {
               <h2 className="text-4xl font-bold text-blue-900">
                 Immerse in Our Culture
               </h2>
-              <Link
-                to="/culture"
+              <button
+                onClick={() => navigateAndScrollToTop("/culture")}
                 className="text-blue-900 font-medium hover:underline flex items-center"
               >
                 Explore More
                 <ChevronRight className="ml-1 h-4 w-4" />
-              </Link>
+              </button>
             </div>
           </motion.div>
 
@@ -228,7 +234,7 @@ const ExplorePage = () => {
             {displayCultures.map((culture, index) => (
               <motion.div
                 key={culture.id}
-                onClick={() => navigate(culture.link)}
+                onClick={() => navigateAndScrollToTop(culture.link)}
                 className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
                 variants={fadeUp}
                 initial="hidden"
@@ -287,13 +293,13 @@ const ExplorePage = () => {
               <h2 className="text-4xl font-bold text-blue-900">
                 Authentic Culinary Experience
               </h2>
-              <Link
-                to="/culinary"
+              <button
+                onClick={() => navigateAndScrollToTop("/culinary")}
                 className="text-blue-900 font-medium hover:underline flex items-center"
               >
                 Explore More
                 <ChevronRight className="ml-1 h-4 w-4" />
-              </Link>
+              </button>
             </div>
           </motion.div>
 
@@ -301,7 +307,7 @@ const ExplorePage = () => {
             {displayCulinary.map((item, index) => (
               <motion.div
                 key={item.id}
-                onClick={() => navigate(item.link)}
+                onClick={() => navigateAndScrollToTop(item.link)}
                 className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
                 variants={fadeUp}
                 initial="hidden"

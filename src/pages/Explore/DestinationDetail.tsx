@@ -22,9 +22,10 @@ export default function DestinationDetail() {
   const prevItem = currentIndex > 0 ? locations[currentIndex - 1] : null;
   const nextItem = currentIndex < locations.length - 1 ? locations[currentIndex + 1] : null;
 
+  // Add destinationPath as a dependency to scroll to top when it changes
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [destinationPath]);
 
   if (!destination) {
     return (
@@ -50,10 +51,12 @@ export default function DestinationDetail() {
     For the best experience, consider visiting during the dry season when weather conditions are optimal for outdoor activities. Many accommodations range from luxury resorts to budget-friendly homestays, catering to all types of travelers.
   `;
 
-  const handleNavigation = (path?: string) => {
+  // Add proper type annotation for path parameter
+  const handleNavigation = (path: string | undefined): void => {
     if (path) {
       const newPath = path.replace('/destination/', '');
       navigate(`/destination/${newPath}`);
+      // No need to add window.scrollTo(0, 0) here as the useEffect will handle it
     }
   };
 
@@ -119,7 +122,7 @@ export default function DestinationDetail() {
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{  amount: 0.2 }}
             transition={{ duration: 0.5 }}
           >
             Destination Details
@@ -134,7 +137,7 @@ export default function DestinationDetail() {
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
+                viewport={{  amount: 0.2 }}
                 transition={{ delay: 0.1 * index }}
               >
                 {paragraph}
@@ -148,7 +151,7 @@ export default function DestinationDetail() {
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{amount: 0.2 }}
             transition={{ delay: 0.2 }}
           >
             <h3 className="text-2xl font-bold mb-4 text-gray-800 flex items-center">
@@ -183,7 +186,7 @@ export default function DestinationDetail() {
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ amount: 0.2 }}
             transition={{ delay: 0.2 }}
           >
             <h3 className="text-2xl font-bold mb-4 text-gray-800">
@@ -232,7 +235,7 @@ export default function DestinationDetail() {
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{  amount: 0.2 }}
             transition={{ delay: 0.5 }}
           >
             <div className="flex items-center">

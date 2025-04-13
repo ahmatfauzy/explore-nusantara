@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent } from "react";
+import { useState, useEffect, MouseEvent, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Map, X } from "lucide-react";
 import { locations, Location } from "../data/locationsData"; // Import the Location type
@@ -90,6 +90,7 @@ export function DestinationCards() {
     mapUrl: ""
   });
   const navigate = useNavigate();
+  const destinationsGridRef = useRef<HTMLDivElement>(null);
 
   // Filter data based on category
   useEffect(() => {
@@ -122,6 +123,13 @@ export function DestinationCards() {
         return false;
       });
       setFilteredLocations(filtered);
+    }
+    
+    // Force re-evaluation of animations by slightly adjusting scroll position
+    if (destinationsGridRef.current) {
+      const currentScrollPos = window.scrollY;
+      window.scrollTo(0, currentScrollPos - 1);
+      window.scrollTo(0, currentScrollPos);
     }
   }, [activeCategory]);
 
@@ -171,7 +179,7 @@ export function DestinationCards() {
         className="flex flex-wrap gap-2 mb-8"
         variants={fadeDown}
         initial="hidden"
-        whileInView="visible"
+        animate="visible" // Changed from whileInView to animate
         transition={{ duration: 0.6 }}
       >
         {regionCategories.map((category, index) => (
@@ -209,48 +217,53 @@ export function DestinationCards() {
       </motion.div>
 
       {/* Destinations Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredLocations.map((location, index) => (
-          <motion.div
-            key={location.id}
-            className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
-            onClick={() => navigate(location.link)}
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ amount: 0.2 }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-          >
-            <div className="h-48 overflow-hidden">
-              <img
-                src={location.image}
-                alt={location.name}
-                className="w-full h-full object-cover hover:scale-105 transition duration-300"
-              />
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-2 text-gray-800">
-                {location.name}
-              </h3>
-              <p className="text-gray-600 mb-4 line-clamp-2">
-                {location.description}
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="inline-flex items-center text-blue-900 font-medium hover:underline">
-                  Explore Details
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </span>
-                <button 
-                  onClick={(e) => openMapModal(e, location)}
-                  className="flex items-center text-green-600 hover:text-green-800"
-                >
-                  <Map className="h-5 w-5 mr-1" />
-                  View Map
-                </button>
+      <div 
+        ref={destinationsGridRef}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        <AnimatePresence>
+          {filteredLocations.map((location, index) => (
+            <motion.div
+              key={location.id}
+              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
+              onClick={() => navigate(location.link)}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible" // Changed from whileInView to animate
+              layout // Added layout prop for smooth transitions
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+            >
+              <div className="h-48 overflow-hidden">
+                <img
+                  src={location.image}
+                  alt={location.name}
+                  className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                />
               </div>
-            </div>
-          </motion.div>
-        ))}
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-2 text-gray-800">
+                  {location.name}
+                </h3>
+                <p className="text-gray-600 mb-4 line-clamp-2">
+                  {location.description}
+                </p>
+                <div className="flex justify-between items-center">
+                  <span className="inline-flex items-center text-blue-900 font-medium hover:underline">
+                    Explore Details
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </span>
+                  <button 
+                    onClick={(e) => openMapModal(e, location)}
+                    className="flex items-center text-green-600 hover:text-green-800"
+                  >
+                    <Map className="h-5 w-5 mr-1" />
+                    View Map
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
 
       {/* Map Modal */}

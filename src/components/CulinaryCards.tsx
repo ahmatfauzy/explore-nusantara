@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { culinaryData } from "../data/culinaryData";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Filter categories for culinary
 const culinaryCategories = [
   { key: "all", label: "All Items" },
-  { key: "food", label: "Food" },
-  { key: "drink", label: "Drinks" },
+  { key: "Food", label: "Food" },
+  { key: "Drink", label: "Drinks" },
 ];
 
 // Animations
@@ -21,6 +21,7 @@ export function CulinaryCards() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [filteredItems, setFilteredItems] = useState(culinaryData);
   const navigate = useNavigate();
+  const culinaryGridRef = useRef<HTMLDivElement>(null);
 
   // Filter items when category changes
   useEffect(() => {
@@ -32,6 +33,13 @@ export function CulinaryCards() {
       );
       setFilteredItems(filtered);
     }
+    
+    // Force a refresh of the animations by slightly adjusting scroll position
+    if (culinaryGridRef.current) {
+      const currentScrollPos = window.scrollY;
+      window.scrollTo(0, currentScrollPos - 1);
+      window.scrollTo(0, currentScrollPos);
+    }
   }, [activeCategory]);
 
   return (
@@ -41,8 +49,7 @@ export function CulinaryCards() {
         className="flex flex-wrap gap-2 mb-8"
         variants={fadeUp}
         initial="hidden"
-        whileInView="visible"
-        // viewport={{ once: true }}
+        animate="visible" // Changed from whileInView to animate
         transition={{ duration: 0.5 }}
       >
         {culinaryCategories.map((category, index) => (
@@ -80,44 +87,49 @@ export function CulinaryCards() {
       </motion.div>
 
       {/* Culinary Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredItems.map((item, index) => (
-          <motion.div
-            key={item.id}
-            className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
-            onClick={() => navigate(item.link)}
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ amount: 0.2 }}
-            transition={{ delay: index * 0.1, duration: 0.4 }}
-          >
-            <div className="h-48 overflow-hidden">
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-full object-cover hover:scale-105 transition duration-300"
-              />
-            </div>
-            <div className="p-6">
-              <div className="flex items-center mb-2">
-                <span className="text-sm text-blue-600 font-medium">
-                  {item.category === "food" ? "Food" : "Drink"} • {item.region}
+      <div 
+        ref={culinaryGridRef}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        <AnimatePresence>
+          {filteredItems.map((item, index) => (
+            <motion.div
+              key={item.id}
+              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition cursor-pointer"
+              onClick={() => navigate(item.link)}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible" // Changed from whileInView to animate
+              layout // Added for smooth transitions
+              transition={{ delay: index * 0.1, duration: 0.4 }}
+            >
+              <div className="h-48 overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                />
+              </div>
+              <div className="p-6">
+                <div className="flex items-center mb-2">
+                  <span className="text-sm text-blue-600 font-medium">
+                    {item.category === "food" ? "Food" : "Drink"} • {item.region}
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-gray-800">
+                  {item.name}
+                </h3>
+                <p className="text-gray-600 mb-4 line-clamp-2">
+                  {item.description}
+                </p>
+                <span className="inline-flex items-center text-blue-900 font-medium hover:underline">
+                  View Details
+                  <ChevronRight className="ml-1 h-4 w-4" />
                 </span>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-gray-800">
-                {item.name}
-              </h3>
-              <p className="text-gray-600 mb-4 line-clamp-2">
-                {item.description}
-              </p>
-              <span className="inline-flex items-center text-blue-900 font-medium hover:underline">
-                View Details
-                <ChevronRight className="ml-1 h-4 w-4" />
-              </span>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </>
   );

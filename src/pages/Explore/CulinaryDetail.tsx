@@ -22,9 +22,10 @@ export default function CulinaryDetail() {
   const prevItem = currentIndex > 0 ? culinaryData[currentIndex - 1] : null;
   const nextItem = currentIndex < culinaryData.length - 1 ? culinaryData[currentIndex + 1] : null;
 
+  // Scroll to top whenever culinaryPath changes
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [culinaryPath]); // Add culinaryPath as a dependency
 
   if (!culinaryItem) {
     return (
@@ -69,14 +70,15 @@ export default function CulinaryDetail() {
     "Authentic preparation methods",
   ];
 
-  const handleNavigation = (path?: string) => {
+  // Add proper type annotation for the path parameter
+  const handleNavigation = (path: string | undefined): void => {
     if (path) {
       const newPath = path.replace('/culinary/', '');
       navigate(`/culinary/${newPath}`);
+      // No need to add window.scrollTo(0, 0) here as the useEffect will handle it
     }
   };
   
-
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Hero Banner */}
