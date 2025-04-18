@@ -339,7 +339,7 @@ const Navbar = () => {
                   : "text-white hover:text-yellow-300"
               }`}
             >
-              Home
+              HOME
             </a>
             <a
               href="/explore"
@@ -349,7 +349,7 @@ const Navbar = () => {
                   : "text-white hover:text-yellow-300"
               }`}
             >
-              Explore Indonesia
+              EXPLORE INDONESIA
             </a>
             <a
               href="/events"
@@ -359,7 +359,7 @@ const Navbar = () => {
                   : "text-white hover:text-yellow-300"
               }`}
             >
-              Calendar of Events
+              CALENDER OF EVENTS
             </a>
             {/* Information Center with dropdown */}
             <div className="relative">
@@ -372,7 +372,7 @@ const Navbar = () => {
                     : "text-white hover:text-yellow-300"
                 }`}
               >
-                Essentials
+                ESSENTIALS
                 <ChevronDown
                   size={18}
                   className={`ml-1 transition-transform duration-300 ${
@@ -543,7 +543,7 @@ const Navbar = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                Home
+                HOME
               </motion.a>
 
               <motion.a
@@ -557,7 +557,7 @@ const Navbar = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                Explore Indonesia
+                EXPLORE INDONESIA
               </motion.a>
 
               <motion.a
@@ -571,7 +571,7 @@ const Navbar = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                Calendar of Events
+                CALENDER OF EVENTS
               </motion.a>
 
               {/* Essentials menu item with dropdown */}
@@ -588,7 +588,7 @@ const Navbar = () => {
                   className="w-full flex justify-between items-center text-black font-medium py-3 hover:bg-gray-100 hover:text-blue-600 rounded-md text-lg px-4"
                   onClick={toggleMobileInfoDropdown}
                 >
-                  Essentials
+                  ESSENTIALS
                   <ChevronDown
                     size={18}
                     className={`transition-transform duration-300 ${
