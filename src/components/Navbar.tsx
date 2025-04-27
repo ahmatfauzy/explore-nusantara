@@ -333,7 +333,7 @@ const Navbar = () => {
           <div className="flex space-x-10">
             <a
               href="/"
-              className={`text-lg font-semibold transition-colors duration-300 ${
+              className={`text-base font-semibold transition-colors duration-300 ${
                 isScrolled
                   ? "text-black hover:text-blue-600"
                   : "text-white hover:text-yellow-300"
@@ -343,7 +343,7 @@ const Navbar = () => {
             </a>
             <a
               href="/explore"
-              className={`text-lg font-semibold transition-colors duration-300 ${
+              className={`text-base font-semibold transition-colors duration-300 ${
                 isScrolled
                   ? "text-black hover:text-blue-600"
                   : "text-white hover:text-yellow-300"
@@ -353,7 +353,7 @@ const Navbar = () => {
             </a>
             <a
               href="/events"
-              className={`text-lg font-semibold transition-colors duration-300 ${
+              className={`text-base font-semibold transition-colors duration-300 ${
                 isScrolled
                   ? "text-black hover:text-blue-600"
                   : "text-white hover:text-yellow-300"
@@ -366,7 +366,7 @@ const Navbar = () => {
               <button
                 id="info-trigger"
                 onClick={toggleInfoDropdown}
-                className={`flex items-center text-lg font-semibold transition-colors duration-300 ${
+                className={`flex items-center text-base font-semibold transition-colors duration-300 ${
                   isScrolled
                     ? "text-black hover:text-blue-600"
                     : "text-white hover:text-yellow-300"
