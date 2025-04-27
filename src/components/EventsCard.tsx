@@ -40,10 +40,10 @@ const EventsCards: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-16"> {/* Changed px-6 to px-4 for better mobile spacing */}
-      {/* Header Section */}
+    <div className="container mx-auto px-4 py-16">
+      {/* Header Section - Fixed to ensure button visibility */}
       <motion.div
-        className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 overflow-hidden"
+        className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8"
         variants={fadeUpVariants}
         initial="hidden"
         whileInView="visible"
@@ -58,18 +58,21 @@ const EventsCards: React.FC = () => {
             The Special Occasion of the Year!
           </h2>
         </div>
-        <a href="/events">
-          <motion.button
-            className="border border-blue-600 px-6 py-2 text-blue-600 font-medium hover:bg-blue-600 hover:text-white transition-colors"
-            variants={fadeUpVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ amount: 0.3 }}
-            custom={0.2}
+        
+        <motion.div
+          variants={fadeUpVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ amount: 0.3 }}
+          custom={0.2}
+        >
+          <a 
+            href="/events"
+            className="inline-block border border-blue-600 px-6 py-2 text-blue-600 font-medium hover:bg-blue-600 hover:text-white transition-colors"
           >
             Explore More Events →
-          </motion.button>
-        </a>
+          </a>
+        </motion.div>
       </motion.div>
 
       {/* Mobile Arrows */}
@@ -95,74 +98,77 @@ const EventsCards: React.FC = () => {
         </button>
       </motion.div>
 
-      {/* Mobile: Slideable Cards - Now centered with padding */}
-      <div
-        ref={scrollContainerRef}
-        className="flex md:hidden overflow-x-auto gap-6 pb-6 scrollbar-hide snap-x snap-mandatory pl-[calc(50%-140px)]" 
-        style={{ 
-          scrollbarWidth: "none", 
-          msOverflowStyle: "none",
-          scrollPadding: "0 calc(50% - 140px)" /* Centers cards when scrolling */
-        }}
-      >
-        {/* Add empty div to create space on the left */}
-        <div className="min-w-[calc(50%-140px)] flex-shrink-0"></div>
-        
-        {events.map((event, index) => (
-          <motion.div
-            key={`mobile-${index}`}
-            onClick={() => handleEventClick(event.path)}
-            className="min-w-[280px] w-[280px] flex-shrink-0 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 hover:shadow-lg snap-start"
-            variants={fadeUpVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ amount: 0.3 }}
-            custom={0.1 + index * 0.1}
-          >
-            <div className="h-40 overflow-hidden">
-              <img
-                src={event.image}
-                alt={event.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="p-4">
-              <div className="mb-3">
-                <span className="inline-block px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
-                  {event.category}
-                </span>
+      {/* Mobile Cards - Centered with proper spacing */}
+      <div className="relative md:hidden">
+        <div
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory"
+          style={{
+            scrollSnapType: 'x mandatory',
+            scrollPadding: '0 50%',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}
+        >
+          {/* Left spacer to center first card */}
+          <div className="flex-shrink-0 w-[calc(50%-140px)]" />
+
+          {events.map((event, index) => (
+            <motion.div
+              key={`mobile-${index}`}
+              className="flex-shrink-0 w-[280px] mx-3 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 hover:shadow-lg snap-start"
+              variants={fadeUpVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ amount: 0.3 }}
+              custom={0.1 + index * 0.1}
+              onClick={() => handleEventClick(event.path)}
+            >
+              <div className="h-40 overflow-hidden">
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                {event.title}
-              </h3>
-              <p className="text-sm text-gray-600 mb-3 flex items-center">
-                <span className="mr-2">📅</span>
-                {event.date}
-              </p>
-              <p className="text-sm text-gray-600 flex items-center">
-                <span className="mr-2">📍</span>
-                {event.location}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-        
-        {/* Add empty div to create space on the right */}
-        <div className="min-w-[calc(50%-140px)] flex-shrink-0"></div>
+              <div className="p-4">
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
+                    {event.category}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                  {event.title}
+                </h3>
+                <p className="text-sm text-gray-600 mb-3 flex items-center">
+                  <span className="mr-2">📅</span>
+                  {event.date}
+                </p>
+                <p className="text-sm text-gray-600 flex items-center">
+                  <span className="mr-2">📍</span>
+                  {event.location}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+
+          {/* Right spacer to center last card */}
+          <div className="flex-shrink-0 w-[calc(50%-140px)]" />
+        </div>
       </div>
 
-      {/* Desktop: Fixed Row of 4 Cards */}
+      {/* Desktop Cards */}
       <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
         {events.map((event, index) => (
           <motion.div
             key={`desktop-${index}`}
-            onClick={() => handleEventClick(event.path)}
             className="w-full h-[360px] bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-lg"
             variants={fadeUpVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ amount: 0.3 }}
             custom={0.1 + index * 0.1}
+            onClick={() => handleEventClick(event.path)}
           >
             <div className="h-40 overflow-hidden">
               <img
