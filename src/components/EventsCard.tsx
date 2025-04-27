@@ -40,21 +40,21 @@ const EventsCards: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-6 py-16">
+    <div className="container mx-auto px-4 py-16"> {/* Changed px-6 to px-4 for better mobile spacing */}
       {/* Header Section */}
       <motion.div
-        className="flex justify-between items-center mb-8 overflow-hidden"
+        className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 overflow-hidden"
         variants={fadeUpVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ amount: 0.3 }}
         custom={0.1}
       >
-        <div>
+        <div className="mb-4 md:mb-0">
           <h3 className="text-sm tracking-wider mb-2 uppercase text-blue-600">
             UPCOMING EVENT
           </h3>
-          <h2 className="text-3xl font-bold text-gray-800 leading-tight">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight">
             The Special Occasion of the Year!
           </h2>
         </div>
@@ -95,12 +95,19 @@ const EventsCards: React.FC = () => {
         </button>
       </motion.div>
 
-      {/* Mobile: Slideable Cards */}
+      {/* Mobile: Slideable Cards - Now centered with padding */}
       <div
         ref={scrollContainerRef}
-        className="flex md:hidden overflow-x-auto gap-6 pb-6 scrollbar-hide snap-x snap-mandatory"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="flex md:hidden overflow-x-auto gap-6 pb-6 scrollbar-hide snap-x snap-mandatory pl-[calc(50%-140px)]" 
+        style={{ 
+          scrollbarWidth: "none", 
+          msOverflowStyle: "none",
+          scrollPadding: "0 calc(50% - 140px)" /* Centers cards when scrolling */
+        }}
       >
+        {/* Add empty div to create space on the left */}
+        <div className="min-w-[calc(50%-140px)] flex-shrink-0"></div>
+        
         {events.map((event, index) => (
           <motion.div
             key={`mobile-${index}`}
@@ -139,10 +146,13 @@ const EventsCards: React.FC = () => {
             </div>
           </motion.div>
         ))}
+        
+        {/* Add empty div to create space on the right */}
+        <div className="min-w-[calc(50%-140px)] flex-shrink-0"></div>
       </div>
 
       {/* Desktop: Fixed Row of 4 Cards */}
-      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
         {events.map((event, index) => (
           <motion.div
             key={`desktop-${index}`}
