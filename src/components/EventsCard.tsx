@@ -105,7 +105,7 @@ const EventsCards: React.FC = () => {
           <motion.div
             key={`mobile-${index}`}
             onClick={() => handleEventClick(event.path)}
-            className="min-w-[280px] w-[340px] flex-shrink-0 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 hover:shadow-lg snap-start"
+            className="min-w-[280px] w-[100%] flex-shrink-0 bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 hover:shadow-lg snap-start"
             variants={fadeUpVariants}
             initial="hidden"
             whileInView="visible"
