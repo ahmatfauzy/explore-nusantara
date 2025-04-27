@@ -18,7 +18,7 @@ const fadeUpVariants = {
 
 const EventsCards: React.FC = () => {
   const navigate = useNavigate();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleEventClick = (path: string) => {
     navigate(path);
@@ -47,7 +47,7 @@ const EventsCards: React.FC = () => {
         variants={fadeUpVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{  amount: 0.3 }}
+        viewport={{ amount: 0.3 }}
         custom={0.1}
       >
         <div>
@@ -64,7 +64,7 @@ const EventsCards: React.FC = () => {
             variants={fadeUpVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{amount: 0.3 }}
+            viewport={{ amount: 0.3 }}
             custom={0.2}
           >
             Explore More Events →
@@ -78,7 +78,7 @@ const EventsCards: React.FC = () => {
         variants={fadeUpVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{amount: 0.3 }}
+        viewport={{ amount: 0.3 }}
         custom={0.3}
       >
         <button
@@ -141,8 +141,8 @@ const EventsCards: React.FC = () => {
         ))}
       </div>
 
-      {/* Desktop: Grid */}
-      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      {/* Desktop: Fixed Row of 4 Cards */}
+      <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {events.map((event, index) => (
           <motion.div
             key={`desktop-${index}`}
