@@ -11,14 +11,14 @@ export interface Event {
 
 export const events: Event[] = [
   {
-    id: 1,
-    category: "Arts",
-    title: "Lom Plai Traditional and Cultural Festival",
-    date: "Apr 01 - May 31, 2025",
-    location: "Kutai Kartanegara, East Kalimantan",
-    image: "/images/events/lompai.png",
-    path: "/events/lom-plai-festival-2025",
-    text: "Experience the rich cultural heritage of East Kalimantan at the Lom Plai Traditional and Cultural Festival. This two-month celebration showcases the unique traditions of the Kutai people and other indigenous groups from the region. Visitors can witness captivating dance performances, traditional music concerts, and ancient ceremonies that have been preserved for generations.\n\nThe festival features the Erau ritual, a sacred ceremony that historically marked the coronation of Kutai sultans and now serves as a thanksgiving celebration. During this time, the spirits of ancestors are honored through complex rituals performed by cultural practitioners.\n\nArtisans from across Kalimantan display traditional crafts including intricate beadwork, wood carving, and textile weaving. Workshops offer hands-on experiences in these traditional art forms, allowing visitors to learn directly from master craftspeople.\n\nCulinary demonstrations highlight the unique flavors of East Kalimantan cuisine, with opportunities to taste local specialties like Kepiting Soka (soft-shell crab), Ayam Kampung Bakar (grilled free-range chicken), and various river fish preparations.\n\nThe Lom Plai Festival represents a meaningful cultural exchange that helps preserve the heritage of East Kalimantan while introducing these traditions to a broader audience.",
+    id: 6,
+    category: "Carnaval",
+    title: "Solo Batik Carnival",
+    date: "Jul 12 - 13, 2025",
+    location: "Surakarta (Solo), Central Java",
+    image: "/images/events/solobatik.png",
+    path: "/events/solo-batik-carnival-2025",
+    text: "The magnificent Solo Batik Carnival returns for its 2025 edition, transforming the streets of Surakarta into a spectacular runway celebrating Indonesia's batik heritage. This vibrant parade showcases elaborate costumes and theatrical performances that reimagine traditional batik patterns through contemporary design and creative expression.\n\nThe carnival features hundreds of participants wearing dramatic costumes created entirely from batik fabrics, with designs inspired by this year's theme: 'Legends of the Archipelago.' Each creation tells a story drawn from Indonesian mythology and folklore, bringing ancient narratives to life through wearable art.\n\nBeyond the main parade, the event includes exhibitions on batik-making processes, from traditional hand-drawn techniques to innovative modern applications. Workshops allow visitors to learn batik-making directly from master artisans from Solo, a city renowned as one of Indonesia's major batik production centers.\n\nFashion shows feature contemporary designers who incorporate batik into ready-to-wear collections, demonstrating how this traditional art form continues to evolve. The batik marketplace offers visitors the opportunity to purchase authentic batik products directly from producers, supporting the local creative economy.\n\nThe Solo Batik Carnival exemplifies how traditional cultural heritage can be preserved and celebrated through contemporary creative expression, ensuring that Indonesia's UNESCO-recognized batik traditions remain vibrant and relevant for new generations.",
   },
   {
     id: 2,
